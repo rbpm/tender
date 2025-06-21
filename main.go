@@ -25,7 +25,6 @@ func newFlagDTO() *flagDTO {
 	saveAll := flag.Bool("saveAll", true, "save all tenders to excel")
 	//max 1048567/12=87381, found 1090*12 =>1000
 	tenderPages := flag.Int("tenderPages", 1000, "number of tender Pages to get")
-	//max 1048567/50=20971, found 18917:50=378 => 300 => server error response of max=1000
 	//max 1000/50=200!!!
 	orderPages := flag.Int("orderPages", 200, "number of order Pages to get")
 	appendAll := flag.Bool("appendAll", false, "append old tenders to new all")
@@ -108,7 +107,6 @@ func processTenders(flags *flagDTO) {
 	} else {
 		fmt.Printf("file %s was not found\n", flags.tenderOldFileName)
 		tendersOldAll = make([]*tenderDTO, 0)
-		//tendersOldAll = append(tendersOldAll, newTenderDTO("przetarg", "link", "data"))
 	}
 	fmt.Printf("tendersOldAll len: %v\n", len(tendersOldAll))
 
@@ -141,7 +139,6 @@ func processOrders(flags *flagDTO) {
 	} else {
 		fmt.Printf("file %s was not found\n", flags.ordersOldFileName)
 		tendersOldAll = make([]*tenderDTO, 0)
-		//tendersOldAll = append(tendersOldAll, newTenderDTO("przetarg", "link", "data"))
 	}
 	fmt.Printf("ordersOldAll len: %v\n", len(tendersOldAll))
 
@@ -165,7 +162,7 @@ func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tend
 	fmt.Println("processSaveDataToExcel")
 
 	fileIT = xlsx.NewFile()
-	err = processSaveToExcel(filename+" IT", fileIT, tendersIT, tendersOldAll)
+	err = processSaveToExcel(filename+" IT", fileIT, tendersIT)
 
 	err = fileIT.Save(filename + "_it_" + fileDateStr() + ".xlsx")
 	if err != nil {
@@ -183,7 +180,7 @@ func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tend
 			}
 		}
 		fileAll = xlsx.NewFile()
-		err = processSaveAllToExcel(filename, tenders, tendersOldAll, fileAll)
+		err = processSaveAllToExcel(filename, tenders, fileAll)
 		err = fileAll.Save(filename + "_all.xlsx")
 		if err != nil {
 			fmt.Printf(err.Error())
@@ -227,7 +224,6 @@ func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []*tenderDTO) []*tenderDTO {
 }
 
 func getHrefID(value string) string {
-	// _noticeId=3108196
 	if len(value) < 10 {
 		return "len err"
 	}
@@ -235,11 +231,11 @@ func getHrefID(value string) string {
 	if pos == -1 {
 		return "index err"
 	}
-	id := value[pos+10 : len(value)]
+	id := value[pos+10:]
 	return id
 }
 
-func processSaveToExcel(sheetName string, file *xlsx.File, tendersIT []*tenderDTO, tendersOldAll []*tenderDTO) error {
+func processSaveToExcel(sheetName string, file *xlsx.File, tendersIT []*tenderDTO) error {
 	sheetIT, err := file.AddSheet(sheetName)
 	setHeader(0, sheetIT)
 	rowIT := 0
@@ -250,7 +246,7 @@ func processSaveToExcel(sheetName string, file *xlsx.File, tendersIT []*tenderDT
 	return err
 }
 
-func processSaveAllToExcel(sheetName string, tenders, tendersOldAll []*tenderDTO, file *xlsx.File) error {
+func processSaveAllToExcel(sheetName string, tenders []*tenderDTO, file *xlsx.File) error {
 	sheet, err := file.AddSheet(sheetName)
 	setAllHeader(sheet)
 	rowOther := 0
@@ -320,35 +316,24 @@ func processGetTenderPage(page int, session *azuretls.Session, tendersIT []*tend
 	if err != nil {
 		panic(err)
 	}
-	//fmt.Println(response.String())
 
 	element, err := gosoup.ParseAsHTML(response.String())
 	if err != nil {
-		// log/handle error
 		fmt.Println("could not parse")
 		return err, tendersIT, tenders, false
 	}
-	//fmt.Println("element:", element)
-
 	containerElement := element.Find("div", gosoup.Attributes{"id": "_7_WAR_organizationnoticeportlet_selectNoticesSearchContainer"})
 	if containerElement == nil {
 		fmt.Println("could not find container element")
 	}
-
-	//fmt.Println("container element:", containerElement)
-
 	subContainer := containerElement.Find("div", gosoup.Attributes{"class": "lfr-search-container-list"})
 	if subContainer == nil {
 		fmt.Println("could not find subContainer element")
 	}
-	//fmt.Println("subContainer element:", subContainer)
-
 	group := subContainer.FindByTag("dl")
 	if group == nil {
 		fmt.Println("could not find group element")
 	}
-	//fmt.Println("group element:", group)
-
 	expectedTag := "dd"
 	expectedAttrKey := "data-qa-id"
 	expectedAttrVal := "row"
@@ -357,7 +342,6 @@ func processGetTenderPage(page int, session *azuretls.Session, tendersIT []*tend
 	if len(elements) != expectedElementsSize {
 		fmt.Printf("wrong number of elements found: %q, expected number: %q", len(elements), expectedElementsSize)
 	}
-
 	for _, element := range elements {
 		if element.Data != expectedTag {
 			fmt.Printf("wrong element tag, expected: %q, actual: %q", expectedTag, element.Data)
@@ -366,12 +350,10 @@ func processGetTenderPage(page int, session *azuretls.Session, tendersIT []*tend
 		if !ok || attributeValue != expectedAttrVal {
 			fmt.Printf("expected attribute: %q: %q does not exist", expectedAttrKey, expectedAttrVal)
 		}
-
 		//TODO add app parameter --debug
 		if false {
 			fmt.Println("dd element:", element)
 		}
-
 		aTag := element.FindByTag("a")
 		if aTag == nil {
 			fmt.Println("could not find aTag element")
@@ -381,22 +363,18 @@ func processGetTenderPage(page int, session *azuretls.Session, tendersIT []*tend
 			fmt.Printf("href attribute: does not exist")
 		}
 
-		//a tag have a name content
 		nameValue := aTag.FirstChild.Data
 		//class="notice-date"
 		//dateDiv := element.Find("div", gosoup.Attributes{"class": "notice-date"})
 		dateSpan := element.Find("span", gosoup.Attributes{"title": "Termin składania ofert"})
 		dateTimeValue := strings.TrimSpace(dateSpan.FirstChild.Data)
-
 		//t, err := time.Parse(time.RFC3339, "2023-05-02T09:34:01Z")
 		//Mon Jun 23 09:00:00 GMT 2025: example value
 		//Mon Jan _2 15:04:05 GMT 2006: layout form
 		const longForm = "Mon Jan _2 15:04:05 GMT 2006"
 		dateTime, _ := time.Parse(longForm, dateTimeValue)
 		dateValue := dateTime.Format("2006.01.02")
-
 		tender := newTenderDTO(nameValue, hrefValue, dateValue, getHrefID(hrefValue))
-
 		tendersIT, tenders = appendTender(tender, tendersIT, tenders)
 		if contains(tendersOldAll, tender) {
 			fmt.Println("processGetTenderPage: old tenders contains this", tender)
@@ -429,8 +407,6 @@ func processGetOrderPage(page int, session *azuretls.Session, tendersIT []*tende
 		println("response:" + response.String())
 		return err, nil, nil, false
 	}
-	//fmt.Printf("order: %+v \n", orders)
-	//fmt.Println(len(orders))
 	for _, order := range orders {
 		tender := order.getTenderDTO()
 		tendersIT, tenders = appendTender(tender, tendersIT, tenders)
