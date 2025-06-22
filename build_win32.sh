@@ -1,1 +1,1 @@
-GOOS=windows GOARCH=386 go build -o przetarg.exe .
+GOOS=windows GOARCH=386 go build -o tender.exe .
