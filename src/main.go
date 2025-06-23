@@ -1,48 +1,18 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
-	"flag"
 	"fmt"
 	"github.com/Noooste/azuretls-client"
-	"github.com/gurkankaymak/gosoup"
 	"github.com/tealeg/xlsx/v3"
-	"strings"
 	"tender/dto"
+	"tender/order_page"
+	"tender/tender_page"
 	"time"
 )
 
-type flagDTO struct {
-	saveAll           bool
-	tenderPages       int
-	orderPages        int
-	appendAll         bool
-	tenderOldFileName string
-	ordersOldFileName string
-}
-
-func newFlagDTO() *flagDTO {
-	saveAll := flag.Bool("saveAll", true, "save all tenders to excel")
-	//max 1048567/12=87381, found 1090*12 =>1000
-	tenderPages := flag.Int("tenderPages", 1000, "number of tender Pages to get")
-	//max 1000/50=200!!!
-	orderPages := flag.Int("orderPages", 200, "number of order Pages to get")
-	appendAll := flag.Bool("appendAll", false, "append old tenders to new all")
-	tenderOldFileName := flag.String("tenderOldFileName", "przetargi_all.xlsx", "tender old file name")
-	ordersOldFileName := flag.String("orderOldFileName", "oferty_all.xlsx", "order old file name")
-	flags := flagDTO{
-		saveAll:           *saveAll,
-		tenderPages:       *tenderPages,
-		orderPages:        *orderPages,
-		appendAll:         *appendAll,
-		tenderOldFileName: *tenderOldFileName,
-		ordersOldFileName: *ordersOldFileName}
-	return &flags
-}
-
 func main() {
-	flags := newFlagDTO()
+	flags := dto.NewFlagDTO()
 	processTenders(flags)
 	processOrders(flags)
 }
@@ -51,7 +21,7 @@ func fileDateStr() string {
 	return time.Now().Format("20060102")
 }
 
-func processTenders(flags *flagDTO) {
+func processTenders(flags *dto.FlagDTO) {
 	var err error
 	var done bool
 	var fileOldAll *xlsx.File
@@ -60,19 +30,19 @@ func processTenders(flags *flagDTO) {
 	tendersIT := make([]*dto.TenderDTO, 0)
 	tendersOldAll := make([]*dto.TenderDTO, 0)
 
-	fileOldAll, err = xlsx.OpenFile(flags.tenderOldFileName)
+	fileOldAll, err = xlsx.OpenFile(flags.TenderOldFileName)
 	if err == nil {
 		tendersOldAll = readOldAll("przetargi", fileOldAll, tendersOldAll)
 	} else {
-		fmt.Printf("file %s was not found\n", flags.tenderOldFileName)
+		fmt.Printf("file %s was not found\n", flags.TenderOldFileName)
 		tendersOldAll = make([]*dto.TenderDTO, 0)
 	}
 	fmt.Printf("tendersOldAll len: %v\n", len(tendersOldAll))
 
 	session := azuretls.NewSession()
-	for page := 1; page <= flags.tenderPages; page++ {
+	for page := 1; page <= flags.TenderPages; page++ {
 		fmt.Println("tender page: ", page)
-		err, tendersIT, tenders, done = processGetTenderPage(page, session, tendersIT, tenders, tendersOldAll)
+		err, tendersIT, tenders, done = tender_page.ProcessGetTenderPage(page, session, tendersIT, tenders, tendersOldAll)
 		if done {
 			fmt.Println("done")
 			break
@@ -82,7 +52,7 @@ func processTenders(flags *flagDTO) {
 	fmt.Println("tenders END")
 }
 
-func processOrders(flags *flagDTO) {
+func processOrders(flags *dto.FlagDTO) {
 	var err error
 	var done bool
 	var fileOldAll *xlsx.File
@@ -92,19 +62,19 @@ func processOrders(flags *flagDTO) {
 	tendersIT := make([]*dto.TenderDTO, 0)
 	tendersOldAll := make([]*dto.TenderDTO, 0)
 
-	fileOldAll, err = xlsx.OpenFile(flags.ordersOldFileName)
+	fileOldAll, err = xlsx.OpenFile(flags.OrdersOldFileName)
 	if err == nil {
 		tendersOldAll = readOldAll("oferty", fileOldAll, tendersOldAll)
 	} else {
-		fmt.Printf("file %s was not found\n", flags.ordersOldFileName)
+		fmt.Printf("file %s was not found\n", flags.OrdersOldFileName)
 		tendersOldAll = make([]*dto.TenderDTO, 0)
 	}
 	fmt.Printf("ordersOldAll len: %v\n", len(tendersOldAll))
 
 	session := azuretls.NewSession()
-	for page := 1; page <= flags.orderPages; page++ {
+	for page := 1; page <= flags.OrderPages; page++ {
 		fmt.Println("order page: ", page)
-		err, tendersIT, tenders, done = processGetOrderPage(page, session, tendersIT, tenders, tendersOldAll)
+		err, tendersIT, tenders, done = order_page.ProcessGetOrderPage(page, session, tendersIT, tenders, tendersOldAll)
 		if done {
 			fmt.Println("done")
 			break
@@ -114,7 +84,7 @@ func processOrders(flags *flagDTO) {
 	fmt.Println("orders END")
 }
 
-func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tendersOldAll []*dto.TenderDTO, flags *flagDTO) {
+func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tendersOldAll []*dto.TenderDTO, flags *dto.FlagDTO) {
 	var fileAll *xlsx.File
 	var fileIT *xlsx.File
 
@@ -128,8 +98,8 @@ func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tend
 		fmt.Printf(err.Error())
 	}
 
-	if flags.saveAll {
-		if flags.appendAll {
+	if flags.SaveAll {
+		if flags.AppendAll {
 			for _, tender := range tendersOldAll {
 				if !tender.IsIn(tenders) {
 					tenders = append(tenders, tender)
@@ -180,18 +150,6 @@ func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []*dto.TenderDTO) []*dto.Tender
 	tender := dto.NewTenderDTO(nameValue, hrefValue, dateValue, idValue)
 	tendersOldAll = append(tendersOldAll, tender)
 	return tendersOldAll
-}
-
-func getHrefID(value string) string {
-	if len(value) < 10 {
-		return "len err"
-	}
-	pos := strings.Index(value, "_noticeId=")
-	if pos == -1 {
-		return "index err"
-	}
-	id := value[pos+10:]
-	return id
 }
 
 func processSaveToExcel(sheetName string, file *xlsx.File, tendersIT []*dto.TenderDTO) error {
@@ -263,116 +221,4 @@ func setAllHeader(sheet *xlsx.Sheet) {
 	cell, _ = sheet.Cell(0, 1)
 	cell.Value = "ID"
 	sheet.SetColWidth(2, 2, 12.5)
-}
-
-func processGetTenderPage(page int, session *azuretls.Session, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO, bool) {
-	pageStr := fmt.Sprintf("%d", page)
-
-	//https://oneplace.marketplanet.pl/zapytania-ofertowe-przetargi/-/rfp/cat?_7_WAR_organizationnoticeportlet_order=createDateDesc
-	//why not this?        https://oneplace.marketplanet.pl/zapytania-ofertowe-przetargi/-/rfp/cat?_7_WAR_organizationnoticeportlet_cur=1_order=createDateDesc
-	//only this form is on www for page n: https://oneplace.marketplanet.pl/zapytania-ofertowe-przetargi/-/rfp/cat?_7_WAR_organizationnoticeportlet_cur=1
-	response, err := session.Get("https://oneplace.marketplanet.pl/zapytania-ofertowe-przetargi/-/rfp/cat?_7_WAR_organizationnoticeportlet_cur=" + pageStr)
-	if err != nil {
-		panic(err)
-	}
-
-	element, err := gosoup.ParseAsHTML(response.String())
-	if err != nil {
-		fmt.Println("could not parse")
-		return err, tendersIT, tenders, false
-	}
-	containerElement := element.Find("div", gosoup.Attributes{"id": "_7_WAR_organizationnoticeportlet_selectNoticesSearchContainer"})
-	if containerElement == nil {
-		fmt.Println("could not find container element")
-	}
-	subContainer := containerElement.Find("div", gosoup.Attributes{"class": "lfr-search-container-list"})
-	if subContainer == nil {
-		fmt.Println("could not find subContainer element")
-	}
-	group := subContainer.FindByTag("dl")
-	if group == nil {
-		fmt.Println("could not find group element")
-	}
-	expectedTag := "dd"
-	expectedAttrKey := "data-qa-id"
-	expectedAttrVal := "row"
-	expectedElementsSize := 12
-	elements := group.FindAll(expectedTag, gosoup.Attributes{expectedAttrKey: expectedAttrVal})
-	if len(elements) != expectedElementsSize {
-		fmt.Printf("wrong number of elements found: %q, expected number: %q", len(elements), expectedElementsSize)
-	}
-	for _, element := range elements {
-		if element.Data != expectedTag {
-			fmt.Printf("wrong element tag, expected: %q, actual: %q", expectedTag, element.Data)
-		}
-		attributeValue, ok := element.GetAttribute(expectedAttrKey)
-		if !ok || attributeValue != expectedAttrVal {
-			fmt.Printf("expected attribute: %q: %q does not exist", expectedAttrKey, expectedAttrVal)
-		}
-		//TODO add app parameter --debug
-		if false {
-			fmt.Println("dd element:", element)
-		}
-		aTag := element.FindByTag("a")
-		if aTag == nil {
-			fmt.Println("could not find aTag element")
-		}
-		hrefValue, ok := aTag.GetAttribute("href")
-		if !ok {
-			fmt.Printf("href attribute: does not exist")
-		}
-
-		nameValue := aTag.FirstChild.Data
-		//class="notice-date"
-		//dateDiv := element.Find("div", gosoup.Attributes{"class": "notice-date"})
-		dateSpan := element.Find("span", gosoup.Attributes{"title": "Termin składania ofert"})
-		dateTimeValue := strings.TrimSpace(dateSpan.FirstChild.Data)
-		//t, err := time.Parse(time.RFC3339, "2023-05-02T09:34:01Z")
-		//Mon Jun 23 09:00:00 GMT 2025: example value
-		//Mon Jan _2 15:04:05 GMT 2006: layout form
-		const longForm = "Mon Jan _2 15:04:05 GMT 2006"
-		dateTime, _ := time.Parse(longForm, dateTimeValue)
-		dateValue := dateTime.Format("2006.01.02")
-		tender := dto.NewTenderDTO(nameValue, hrefValue, dateValue, getHrefID(hrefValue))
-		tendersIT, tenders = appendTender(tender, tendersIT, tenders)
-		if tender.IsIn(tendersOldAll) {
-			fmt.Println("processGetTenderPage: old tenders contains this", tender)
-			return err, tendersIT, tenders, true
-		}
-	}
-	return err, tendersIT, tenders, false
-}
-
-func appendTender(tender *dto.TenderDTO, tendersIT, tenders []*dto.TenderDTO) ([]*dto.TenderDTO, []*dto.TenderDTO) {
-	if tender.IsIT {
-		tendersIT = append(tendersIT, tender)
-		tenders = append(tenders, tender)
-	} else {
-		tenders = append(tenders, tender)
-	}
-	return tendersIT, tenders
-}
-
-func processGetOrderPage(page int, session *azuretls.Session, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO, bool) {
-	var orders []dto.OrderDTO
-	pageStr := fmt.Sprintf("%d", page)
-	response, err := session.Get("https://ezamowienia.gov.pl/mp-readmodels/api/Search/SearchTenders?SortingColumnName=InitiationDate&SortingDirection=DESC&PageNumber=" + pageStr + "&PageSize=50")
-	if err != nil {
-		panic(err)
-	}
-	err = json.Unmarshal([]byte(response.String()), &orders)
-	if err != nil {
-		println(err.Error())
-		println("response:" + response.String())
-		return err, nil, nil, false
-	}
-	for _, order := range orders {
-		tender := order.GetTenderDTO()
-		tendersIT, tenders = appendTender(tender, tendersIT, tenders)
-		if tender.IsIn(tendersOldAll) {
-			fmt.Println("processGetOrderPage: old orders contains this:", tender)
-			return err, tendersIT, tenders, true
-		}
-	}
-	return err, tendersIT, tenders, false
 }

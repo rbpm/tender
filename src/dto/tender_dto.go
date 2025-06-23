@@ -31,3 +31,13 @@ func (tender *TenderDTO) IsIn(tenders []*TenderDTO) bool {
 	}
 	return false
 }
+
+func (tender *TenderDTO) AppendTo(tendersIT, tenders []*TenderDTO) ([]*TenderDTO, []*TenderDTO) {
+	if tender.IsIT {
+		tendersIT = append(tendersIT, tender)
+		tenders = append(tenders, tender)
+	} else {
+		tenders = append(tenders, tender)
+	}
+	return tendersIT, tenders
+}
