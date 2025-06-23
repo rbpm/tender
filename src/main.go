@@ -41,30 +41,6 @@ func newFlagDTO() *flagDTO {
 	return &flags
 }
 
-type orderDTO struct {
-	ObjectId                string    `json:"objectId"`
-	Title                   string    `json:"title"`
-	OrganizationId          string    `json:"organizationId"`
-	OrganizationName        string    `json:"organizationName"`
-	OrganizationPartName    string    `json:"organizationPartName"`
-	OrganizationCity        string    `json:"organizationCity"`
-	OrganizationProvince    string    `json:"organizationProvince"`
-	BzpNumber               string    `json:"bzpNumber"`
-	TenderType              string    `json:"tenderType"`
-	CompetitionType         string    `json:"competitionType"`
-	ConcessionType          string    `json:"concessionType"`
-	SubmissionOffersDate    time.Time `json:"submissionOffersDate"`
-	TenderState             string    `json:"tenderState"`
-	IsTenderAmountBelowEU   bool      `json:"isTenderAmountBelowEU"`
-	TedContractNoticeNumber string    `json:"tedContractNoticeNumber"`
-	InitiationDate          time.Time `json:"initiationDate"`
-}
-
-func (order orderDTO) getTenderDTO() *dto.TenderDTO {
-	href := "https://ezamowienia.gov.pl/mp-client/search/list/" + order.ObjectId
-	return dto.NewTenderDTO(order.Title, href, order.SubmissionOffersDate.Format("2006.01.02"), order.ObjectId)
-}
-
 func main() {
 	flags := newFlagDTO()
 	processTenders(flags)
@@ -378,7 +354,7 @@ func appendTender(tender *dto.TenderDTO, tendersIT, tenders []*dto.TenderDTO) ([
 }
 
 func processGetOrderPage(page int, session *azuretls.Session, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO, bool) {
-	var orders []orderDTO
+	var orders []dto.OrderDTO
 	pageStr := fmt.Sprintf("%d", page)
 	response, err := session.Get("https://ezamowienia.gov.pl/mp-readmodels/api/Search/SearchTenders?SortingColumnName=InitiationDate&SortingDirection=DESC&PageNumber=" + pageStr + "&PageSize=50")
 	if err != nil {
@@ -391,7 +367,7 @@ func processGetOrderPage(page int, session *azuretls.Session, tendersIT []*dto.T
 		return err, nil, nil, false
 	}
 	for _, order := range orders {
-		tender := order.getTenderDTO()
+		tender := order.GetTenderDTO()
 		tendersIT, tenders = appendTender(tender, tendersIT, tenders)
 		if tender.IsIn(tendersOldAll) {
 			fmt.Println("processGetOrderPage: old orders contains this:", tender)
