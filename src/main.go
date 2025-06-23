@@ -33,18 +33,6 @@ func processTenders(flags *dto.FlagDTO) {
 	fmt.Println("tenders END")
 }
 
-func readOldAllFile(fileName string, sheetName string, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO) {
-	fileOldAll, err := xlsx.OpenFile(fileName)
-	if err == nil {
-		tendersOldAll = readOldAll(sheetName, fileOldAll, tendersOldAll)
-	} else {
-		fmt.Printf("file %s was not found\n", fileName)
-		tendersOldAll = make([]*dto.TenderDTO, 0)
-	}
-	fmt.Printf("tendersOldAll len: %v\n", len(tendersOldAll))
-	return err, tendersOldAll
-}
-
 func processOrders(flags *dto.FlagDTO) {
 	var err error
 	var done bool
@@ -93,6 +81,18 @@ func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tend
 			fmt.Printf(err.Error())
 		}
 	}
+}
+
+func readOldAllFile(fileName string, sheetName string, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO) {
+	fileOldAll, err := xlsx.OpenFile(fileName)
+	if err == nil {
+		tendersOldAll = readOldAll(sheetName, fileOldAll, tendersOldAll)
+	} else {
+		fmt.Printf("file %s was not found\n", fileName)
+		tendersOldAll = make([]*dto.TenderDTO, 0)
+	}
+	fmt.Printf("tendersOldAll len: %v\n", len(tendersOldAll))
+	return err, tendersOldAll
 }
 
 func readOldAll(sheetName string, fileOldAll *xlsx.File, tendersOldAll []*dto.TenderDTO) []*dto.TenderDTO {
