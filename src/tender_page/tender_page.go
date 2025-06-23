@@ -9,6 +9,19 @@ import (
 	"time"
 )
 
+func ProcessGetTenderPages(flags *dto.FlagDTO, err error, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, done bool, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO) {
+	session := azuretls.NewSession()
+	for page := 1; page <= flags.TenderPages; page++ {
+		fmt.Println("tender page: ", page)
+		err, tendersIT, tenders, done = ProcessGetTenderPage(page, session, tendersIT, tenders, tendersOldAll)
+		if done {
+			fmt.Println("done")
+			break
+		}
+	}
+	return err, tendersIT, tenders
+}
+
 func ProcessGetTenderPage(page int, session *azuretls.Session, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO, bool) {
 	pageStr := fmt.Sprintf("%d", page)
 

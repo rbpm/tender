@@ -7,6 +7,19 @@ import (
 	"tender/dto"
 )
 
+func ProcessGetOrderPages(flags *dto.FlagDTO, err error, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, done bool, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO) {
+	session := azuretls.NewSession()
+	for page := 1; page <= flags.OrderPages; page++ {
+		fmt.Println("order page: ", page)
+		err, tendersIT, tenders, done = ProcessGetOrderPage(page, session, tendersIT, tenders, tendersOldAll)
+		if done {
+			fmt.Println("done")
+			break
+		}
+	}
+	return err, tendersIT, tenders
+}
+
 func ProcessGetOrderPage(page int, session *azuretls.Session, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO, bool) {
 	var orders []dto.OrderDTO
 	pageStr := fmt.Sprintf("%d", page)

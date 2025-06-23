@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/Noooste/azuretls-client"
 	"github.com/tealeg/xlsx/v3"
 	"tender/dto"
 	"tender/order_page"
@@ -24,62 +23,37 @@ func fileDateStr() string {
 func processTenders(flags *dto.FlagDTO) {
 	var err error
 	var done bool
-	var fileOldAll *xlsx.File
-
+	fmt.Println("tenders START")
 	tenders := make([]*dto.TenderDTO, 0)
 	tendersIT := make([]*dto.TenderDTO, 0)
 	tendersOldAll := make([]*dto.TenderDTO, 0)
+	err, tendersOldAll = readOldAllFile(flags.TenderOldFileName, "przetargi", tendersOldAll)
+	err, tendersIT, tenders = tender_page.ProcessGetTenderPages(flags, err, tendersIT, tenders, done, tendersOldAll)
+	processSaveDataToExcel("przetargi", err, tenders, tendersIT, tendersOldAll, flags)
+	fmt.Println("tenders END")
+}
 
-	fileOldAll, err = xlsx.OpenFile(flags.TenderOldFileName)
+func readOldAllFile(fileName string, sheetName string, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO) {
+	fileOldAll, err := xlsx.OpenFile(fileName)
 	if err == nil {
-		tendersOldAll = readOldAll("przetargi", fileOldAll, tendersOldAll)
+		tendersOldAll = readOldAll(sheetName, fileOldAll, tendersOldAll)
 	} else {
-		fmt.Printf("file %s was not found\n", flags.TenderOldFileName)
+		fmt.Printf("file %s was not found\n", fileName)
 		tendersOldAll = make([]*dto.TenderDTO, 0)
 	}
 	fmt.Printf("tendersOldAll len: %v\n", len(tendersOldAll))
-
-	session := azuretls.NewSession()
-	for page := 1; page <= flags.TenderPages; page++ {
-		fmt.Println("tender page: ", page)
-		err, tendersIT, tenders, done = tender_page.ProcessGetTenderPage(page, session, tendersIT, tenders, tendersOldAll)
-		if done {
-			fmt.Println("done")
-			break
-		}
-	}
-	processSaveDataToExcel("przetargi", err, tenders, tendersIT, tendersOldAll, flags)
-	fmt.Println("tenders END")
+	return err, tendersOldAll
 }
 
 func processOrders(flags *dto.FlagDTO) {
 	var err error
 	var done bool
-	var fileOldAll *xlsx.File
-
 	fmt.Println("orders START")
 	tenders := make([]*dto.TenderDTO, 0)
 	tendersIT := make([]*dto.TenderDTO, 0)
 	tendersOldAll := make([]*dto.TenderDTO, 0)
-
-	fileOldAll, err = xlsx.OpenFile(flags.OrdersOldFileName)
-	if err == nil {
-		tendersOldAll = readOldAll("oferty", fileOldAll, tendersOldAll)
-	} else {
-		fmt.Printf("file %s was not found\n", flags.OrdersOldFileName)
-		tendersOldAll = make([]*dto.TenderDTO, 0)
-	}
-	fmt.Printf("ordersOldAll len: %v\n", len(tendersOldAll))
-
-	session := azuretls.NewSession()
-	for page := 1; page <= flags.OrderPages; page++ {
-		fmt.Println("order page: ", page)
-		err, tendersIT, tenders, done = order_page.ProcessGetOrderPage(page, session, tendersIT, tenders, tendersOldAll)
-		if done {
-			fmt.Println("done")
-			break
-		}
-	}
+	err, tendersOldAll = readOldAllFile(flags.OrdersOldFileName, "oferty", tendersOldAll)
+	err, tendersIT, tenders = order_page.ProcessGetOrderPages(flags, err, tendersIT, tenders, done, tendersOldAll)
 	processSaveDataToExcel("oferty", err, tenders, tendersIT, tendersOldAll, flags)
 	fmt.Println("orders END")
 }
@@ -124,7 +98,7 @@ func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tend
 func readOldAll(sheetName string, fileOldAll *xlsx.File, tendersOldAll []*dto.TenderDTO) []*dto.TenderDTO {
 	sheet, ok := fileOldAll.Sheet[sheetName]
 	if !ok {
-		panic(errors.New("Sheet tenders not found"))
+		panic(errors.New("sheet " + sheetName + " not found"))
 	}
 	fmt.Println("Max row is", sheet.MaxRow)
 	for row := 1; row < sheet.MaxRow; row++ {
