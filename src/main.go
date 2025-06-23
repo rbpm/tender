@@ -139,6 +139,9 @@ func processSaveToExcel(sheetName string, file *xlsx.File, tendersIT []*dto.Tend
 
 func processSaveAllToExcel(sheetName string, tenders []*dto.TenderDTO, file *xlsx.File) error {
 	sheet, err := file.AddSheet(sheetName)
+	if err != nil {
+		return err
+	}
 	setAllHeader(sheet)
 	rowOther := 0
 	for _, tender := range tenders {
