@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.24.4
 
 require (
-	github.com/Noooste/azuretls-client v1.10.4
+	github.com/Noooste/azuretls-client v1.10.5
 	github.com/gurkankaymak/gosoup v1.0.0
 	github.com/tealeg/xlsx/v3 v3.3.13
 )

@@ -9,6 +9,7 @@ import (
 	"github.com/gurkankaymak/gosoup"
 	"github.com/tealeg/xlsx/v3"
 	"strings"
+	"tender/dto"
 	"time"
 )
 
@@ -40,24 +41,6 @@ func newFlagDTO() *flagDTO {
 	return &flags
 }
 
-type tenderDTO struct {
-	name string
-	href string
-	date string
-	id   string
-	isIT bool
-}
-
-func newTenderDTO(name string, href string, date string, id string) *tenderDTO {
-	lowerName := strings.ToLower(name)
-	isIT := strings.Contains(lowerName, "oprogramowani") ||
-		strings.Contains(lowerName, " it ") ||
-		strings.Contains(lowerName, "rozwój i utrzymanie systemu") ||
-		strings.Contains(lowerName, "aplikacj")
-	p := tenderDTO{name: name, href: href, date: date, id: id, isIT: isIT}
-	return &p
-}
-
 type orderDTO struct {
 	ObjectId                string    `json:"objectId"`
 	Title                   string    `json:"title"`
@@ -77,9 +60,9 @@ type orderDTO struct {
 	InitiationDate          time.Time `json:"initiationDate"`
 }
 
-func (order orderDTO) getTenderDTO() *tenderDTO {
+func (order orderDTO) getTenderDTO() *dto.TenderDTO {
 	href := "https://ezamowienia.gov.pl/mp-client/search/list/" + order.ObjectId
-	return newTenderDTO(order.Title, href, order.SubmissionOffersDate.Format("2006.01.02"), order.ObjectId)
+	return dto.NewTenderDTO(order.Title, href, order.SubmissionOffersDate.Format("2006.01.02"), order.ObjectId)
 }
 
 func main() {
@@ -97,16 +80,16 @@ func processTenders(flags *flagDTO) {
 	var done bool
 	var fileOldAll *xlsx.File
 
-	tenders := make([]*tenderDTO, 0)
-	tendersIT := make([]*tenderDTO, 0)
-	tendersOldAll := make([]*tenderDTO, 0)
+	tenders := make([]*dto.TenderDTO, 0)
+	tendersIT := make([]*dto.TenderDTO, 0)
+	tendersOldAll := make([]*dto.TenderDTO, 0)
 
 	fileOldAll, err = xlsx.OpenFile(flags.tenderOldFileName)
 	if err == nil {
 		tendersOldAll = readOldAll("przetargi", fileOldAll, tendersOldAll)
 	} else {
 		fmt.Printf("file %s was not found\n", flags.tenderOldFileName)
-		tendersOldAll = make([]*tenderDTO, 0)
+		tendersOldAll = make([]*dto.TenderDTO, 0)
 	}
 	fmt.Printf("tendersOldAll len: %v\n", len(tendersOldAll))
 
@@ -129,16 +112,16 @@ func processOrders(flags *flagDTO) {
 	var fileOldAll *xlsx.File
 
 	fmt.Println("orders START")
-	tenders := make([]*tenderDTO, 0)
-	tendersIT := make([]*tenderDTO, 0)
-	tendersOldAll := make([]*tenderDTO, 0)
+	tenders := make([]*dto.TenderDTO, 0)
+	tendersIT := make([]*dto.TenderDTO, 0)
+	tendersOldAll := make([]*dto.TenderDTO, 0)
 
 	fileOldAll, err = xlsx.OpenFile(flags.ordersOldFileName)
 	if err == nil {
 		tendersOldAll = readOldAll("oferty", fileOldAll, tendersOldAll)
 	} else {
 		fmt.Printf("file %s was not found\n", flags.ordersOldFileName)
-		tendersOldAll = make([]*tenderDTO, 0)
+		tendersOldAll = make([]*dto.TenderDTO, 0)
 	}
 	fmt.Printf("ordersOldAll len: %v\n", len(tendersOldAll))
 
@@ -155,7 +138,7 @@ func processOrders(flags *flagDTO) {
 	fmt.Println("orders END")
 }
 
-func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tendersOldAll []*tenderDTO, flags *flagDTO) {
+func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tendersOldAll []*dto.TenderDTO, flags *flagDTO) {
 	var fileAll *xlsx.File
 	var fileIT *xlsx.File
 
@@ -172,7 +155,7 @@ func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tend
 	if flags.saveAll {
 		if flags.appendAll {
 			for _, tender := range tendersOldAll {
-				if !contains(tenders, tender) {
+				if !tender.IsIn(tenders) {
 					tenders = append(tenders, tender)
 				} else {
 					fmt.Println("processSaveDataToExcel saveAll: there is already this old tender")
@@ -192,7 +175,7 @@ func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tend
 	}
 }
 
-func readOldAll(sheetName string, fileOldAll *xlsx.File, tendersOldAll []*tenderDTO) []*tenderDTO {
+func readOldAll(sheetName string, fileOldAll *xlsx.File, tendersOldAll []*dto.TenderDTO) []*dto.TenderDTO {
 	sheet, ok := fileOldAll.Sheet[sheetName]
 	if !ok {
 		panic(errors.New("Sheet tenders not found"))
@@ -208,7 +191,7 @@ func readOldAll(sheetName string, fileOldAll *xlsx.File, tendersOldAll []*tender
 	return tendersOldAll
 }
 
-func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []*tenderDTO) []*tenderDTO {
+func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []*dto.TenderDTO) []*dto.TenderDTO {
 	nr := 1
 	idCell := r.GetCell(nr)
 	idValue := idCell.Value
@@ -218,7 +201,7 @@ func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []*tenderDTO) []*tenderDTO {
 	hrefValue := hrefCell.Value
 	nameCell := r.GetCell(nr + 3)
 	nameValue := nameCell.Value
-	tender := newTenderDTO(nameValue, hrefValue, dateValue, idValue)
+	tender := dto.NewTenderDTO(nameValue, hrefValue, dateValue, idValue)
 	tendersOldAll = append(tendersOldAll, tender)
 	return tendersOldAll
 }
@@ -235,7 +218,7 @@ func getHrefID(value string) string {
 	return id
 }
 
-func processSaveToExcel(sheetName string, file *xlsx.File, tendersIT []*tenderDTO) error {
+func processSaveToExcel(sheetName string, file *xlsx.File, tendersIT []*dto.TenderDTO) error {
 	sheetIT, err := file.AddSheet(sheetName)
 	setHeader(0, sheetIT)
 	rowIT := 0
@@ -246,37 +229,37 @@ func processSaveToExcel(sheetName string, file *xlsx.File, tendersIT []*tenderDT
 	return err
 }
 
-func processSaveAllToExcel(sheetName string, tenders []*tenderDTO, file *xlsx.File) error {
+func processSaveAllToExcel(sheetName string, tenders []*dto.TenderDTO, file *xlsx.File) error {
 	sheet, err := file.AddSheet(sheetName)
 	setAllHeader(sheet)
 	rowOther := 0
 	for _, tender := range tenders {
 		rowOther++
 		setRowData(2, sheet, rowOther, tender)
-		if tender.isIT {
+		if tender.IsIT {
 			cell, _ := sheet.Cell(rowOther, 0)
 			cell.Value = "IT"
 		}
 		cell, _ := sheet.Cell(rowOther, 1)
-		cell.Value = tender.id
+		cell.Value = tender.Id
 	}
 	return err
 }
 
-func setRowData(startCell int, sheet *xlsx.Sheet, r int, tender *tenderDTO) {
+func setRowData(startCell int, sheet *xlsx.Sheet, r int, tender *dto.TenderDTO) {
 	nr := startCell
 	cell, _ := sheet.Cell(r, nr)
-	cell.Value = tender.date
+	cell.Value = tender.Date
 
 	cell, _ = sheet.Cell(r, nr+1)
-	cell.SetHyperlink(tender.href, tender.href, "")
+	cell.SetHyperlink(tender.Href, tender.Href, "")
 	style := cell.GetStyle()
 	style.Font.Underline = true
 	style.Font.Color = "FF0000FF"
 	cell.SetStyle(style)
 
 	cell, _ = sheet.Cell(r, nr+2)
-	cell.Value = tender.name
+	cell.Value = tender.Name
 }
 
 func setHeader(startCell int, sheet *xlsx.Sheet) {
@@ -306,7 +289,7 @@ func setAllHeader(sheet *xlsx.Sheet) {
 	sheet.SetColWidth(2, 2, 12.5)
 }
 
-func processGetTenderPage(page int, session *azuretls.Session, tendersIT []*tenderDTO, tenders []*tenderDTO, tendersOldAll []*tenderDTO) (error, []*tenderDTO, []*tenderDTO, bool) {
+func processGetTenderPage(page int, session *azuretls.Session, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO, bool) {
 	pageStr := fmt.Sprintf("%d", page)
 
 	//https://oneplace.marketplanet.pl/zapytania-ofertowe-przetargi/-/rfp/cat?_7_WAR_organizationnoticeportlet_order=createDateDesc
@@ -374,9 +357,9 @@ func processGetTenderPage(page int, session *azuretls.Session, tendersIT []*tend
 		const longForm = "Mon Jan _2 15:04:05 GMT 2006"
 		dateTime, _ := time.Parse(longForm, dateTimeValue)
 		dateValue := dateTime.Format("2006.01.02")
-		tender := newTenderDTO(nameValue, hrefValue, dateValue, getHrefID(hrefValue))
+		tender := dto.NewTenderDTO(nameValue, hrefValue, dateValue, getHrefID(hrefValue))
 		tendersIT, tenders = appendTender(tender, tendersIT, tenders)
-		if contains(tendersOldAll, tender) {
+		if tender.IsIn(tendersOldAll) {
 			fmt.Println("processGetTenderPage: old tenders contains this", tender)
 			return err, tendersIT, tenders, true
 		}
@@ -384,8 +367,8 @@ func processGetTenderPage(page int, session *azuretls.Session, tendersIT []*tend
 	return err, tendersIT, tenders, false
 }
 
-func appendTender(tender *tenderDTO, tendersIT, tenders []*tenderDTO) ([]*tenderDTO, []*tenderDTO) {
-	if tender.isIT {
+func appendTender(tender *dto.TenderDTO, tendersIT, tenders []*dto.TenderDTO) ([]*dto.TenderDTO, []*dto.TenderDTO) {
+	if tender.IsIT {
 		tendersIT = append(tendersIT, tender)
 		tenders = append(tenders, tender)
 	} else {
@@ -394,7 +377,7 @@ func appendTender(tender *tenderDTO, tendersIT, tenders []*tenderDTO) ([]*tender
 	return tendersIT, tenders
 }
 
-func processGetOrderPage(page int, session *azuretls.Session, tendersIT []*tenderDTO, tenders []*tenderDTO, tendersOldAll []*tenderDTO) (error, []*tenderDTO, []*tenderDTO, bool) {
+func processGetOrderPage(page int, session *azuretls.Session, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO, bool) {
 	var orders []orderDTO
 	pageStr := fmt.Sprintf("%d", page)
 	response, err := session.Get("https://ezamowienia.gov.pl/mp-readmodels/api/Search/SearchTenders?SortingColumnName=InitiationDate&SortingDirection=DESC&PageNumber=" + pageStr + "&PageSize=50")
@@ -410,20 +393,10 @@ func processGetOrderPage(page int, session *azuretls.Session, tendersIT []*tende
 	for _, order := range orders {
 		tender := order.getTenderDTO()
 		tendersIT, tenders = appendTender(tender, tendersIT, tenders)
-		if contains(tendersOldAll, tender) {
+		if tender.IsIn(tendersOldAll) {
 			fmt.Println("processGetOrderPage: old orders contains this:", tender)
 			return err, tendersIT, tenders, true
 		}
 	}
 	return err, tendersIT, tenders, false
-}
-
-func contains(tenders []*tenderDTO, tender *tenderDTO) bool {
-	for _, p := range tenders {
-		if p.id == tender.id && p.name == tender.name {
-			fmt.Printf("id=%s;", p.id)
-			return true
-		}
-	}
-	return false
 }

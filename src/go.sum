@@ -1,5 +1,7 @@
 github.com/Noooste/azuretls-client v1.10.4 h1:dMFTbV9H8MAigM+e51ObbQKiiP8Hz8I1nMtDUEBDM40=
 github.com/Noooste/azuretls-client v1.10.4/go.mod h1:F6MFV19V2Z2sCwSwhcXOuHWbsE0V2OFItExuzCgyjhA=
+github.com/Noooste/azuretls-client v1.10.5 h1:0UKdlGQf1xNGB+QVNR7V8VeRVZ6cloJIA9EG1lUt4T4=
+github.com/Noooste/azuretls-client v1.10.5/go.mod h1:F6MFV19V2Z2sCwSwhcXOuHWbsE0V2OFItExuzCgyjhA=
 github.com/Noooste/fhttp v1.0.13 h1:32Zq6dOXBrZAGq1ZeoUdqPel3ubtFF4MuI0IMb1YH/M=
 github.com/Noooste/fhttp v1.0.13/go.mod h1:CMVxKOhNheqJN5HYE4Rlvz2SRdV8Uv7YWmi6OwmB/Bk=
 github.com/Noooste/uquic-go v0.0.29 h1:rpj1P0Krdi4eHggAlRy1wiunrd50TO5vAvSbrVDaJ2A=
