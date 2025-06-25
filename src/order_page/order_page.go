@@ -35,7 +35,7 @@ func ProcessGetOrderPage(page int, session *azuretls.Session, tenders []data.Dat
 		return err, nil, false
 	}
 	for _, order := range orders {
-		tender := order.GetTenderDTO()
+		tender := order.GetDataDTO()
 		tenders = append(tenders, tender)
 		if data.IsIn(tendersOldAll, tender) {
 			fmt.Println("processGetOrderPage: old orders contains this:", tender)

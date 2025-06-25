@@ -120,7 +120,7 @@ func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []data.Data) []data.Data {
 	hrefValue := hrefCell.Value
 	nameCell := r.GetCell(nr + 3)
 	nameValue := nameCell.Value
-	tender := dto.NewTenderDTO(nameValue, hrefValue, dateValue, idValue)
+	tender := dto.NewDataDTO(nameValue, hrefValue, dateValue, idValue)
 	tendersOldAll = append(tendersOldAll, tender)
 	return tendersOldAll
 }

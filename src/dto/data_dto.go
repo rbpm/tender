@@ -12,7 +12,7 @@ type DataDTO struct {
 	isIT bool
 }
 
-func NewTenderDTO(name string, href string, date string, id string) *DataDTO {
+func NewDataDTO(name string, href string, date string, id string) *DataDTO {
 	p := DataDTO{name: name, href: href, date: date, id: id, isIT: data.IsIT(name)}
 	return &p
 }
