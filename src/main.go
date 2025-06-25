@@ -62,7 +62,7 @@ func processSaveDataToExcel(filename string, err error, tenders, tendersOldAll [
 	if flags.SaveAll {
 		if flags.AppendAll {
 			for _, tender := range tendersOldAll {
-				if !data.IsIn(tender, tenders) {
+				if !data.IsIn(tenders, tender) {
 					tenders = append(tenders, tender)
 				} else {
 					fmt.Println("processSaveDataToExcel saveAll: there is already this old tender")

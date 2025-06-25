@@ -13,7 +13,7 @@ type TenderDTO struct {
 }
 
 func NewTenderDTO(name string, href string, date string, id string) *TenderDTO {
-	p := TenderDTO{name: name, href: href, date: date, id: id, isIT: data.IsIt(name)}
+	p := TenderDTO{name: name, href: href, date: date, id: id, isIT: data.IsIT(name)}
 	return &p
 }
 

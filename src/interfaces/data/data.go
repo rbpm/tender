@@ -10,7 +10,7 @@ type Data interface {
 	IsIT() bool
 }
 
-func IsIn(tender Data, tenders []Data) bool {
+func IsIn(tenders []Data, tender Data) bool {
 	for _, p := range tenders {
 		if p.Id() == tender.Id() && p.Name() == tender.Name() {
 			return true
@@ -19,7 +19,7 @@ func IsIn(tender Data, tenders []Data) bool {
 	return false
 }
 
-func IsIt(name string) bool {
+func IsIT(name string) bool {
 	lowerName := strings.ToLower(name)
 	return strings.Contains(lowerName, "oprogramowani") ||
 		strings.Contains(lowerName, " it ") ||

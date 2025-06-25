@@ -94,7 +94,7 @@ func ProcessGetTenderPage(page int, session *azuretls.Session, tenders []data.Da
 		dateValue := dateTime.Format("2006.01.02")
 		tender := dto.NewTenderDTO(nameValue, hrefValue, dateValue, getHrefID(hrefValue))
 		tenders = append(tenders, tender)
-		if data.IsIn(tender, tendersOldAll) {
+		if data.IsIn(tendersOldAll, tender) {
 			fmt.Println("processGetTenderPage: old tenders contains this", tender)
 			return err, tenders, true
 		}
