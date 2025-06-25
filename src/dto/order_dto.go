@@ -21,7 +21,7 @@ type OrderDTO struct {
 	InitiationDate          time.Time `json:"initiationDate"`
 }
 
-func (order OrderDTO) GetTenderDTO() *TenderDTO {
+func (order OrderDTO) GetTenderDTO() *DataDTO {
 	href := "https://ezamowienia.gov.pl/mp-client/search/list/" + order.ObjectId
 	return NewTenderDTO(order.Title, href, order.SubmissionOffersDate.Format("2006.01.02"), order.ObjectId)
 }
