@@ -6,23 +6,24 @@ import (
 	"github.com/gurkankaymak/gosoup"
 	"strings"
 	"tender/dto"
+	"tender/interfaces/data"
 	"time"
 )
 
-func ProcessGetTenderPages(flags *dto.FlagDTO, err error, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, done bool, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO) {
+func ProcessGetTenderPages(flags *dto.FlagDTO, err error, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
 	session := azuretls.NewSession()
 	for page := 1; page <= flags.TenderPages; page++ {
 		fmt.Println("tender page: ", page)
-		err, tendersIT, tenders, done = ProcessGetTenderPage(page, session, tendersIT, tenders, tendersOldAll)
+		err, tenders, done = ProcessGetTenderPage(page, session, tenders, tendersOldAll)
 		if done {
 			fmt.Println("done")
 			break
 		}
 	}
-	return err, tendersIT, tenders
+	return err, tenders
 }
 
-func ProcessGetTenderPage(page int, session *azuretls.Session, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO, bool) {
+func ProcessGetTenderPage(page int, session *azuretls.Session, tenders []data.Data, tendersOldAll []data.Data) (error, []data.Data, bool) {
 	pageStr := fmt.Sprintf("%d", page)
 
 	//https://oneplace.marketplanet.pl/zapytania-ofertowe-przetargi/-/rfp/cat?_7_WAR_organizationnoticeportlet_order=createDateDesc
@@ -36,7 +37,7 @@ func ProcessGetTenderPage(page int, session *azuretls.Session, tendersIT []*dto.
 	element, err := gosoup.ParseAsHTML(response.String())
 	if err != nil {
 		fmt.Println("could not parse")
-		return err, tendersIT, tenders, false
+		return err, tenders, false
 	}
 	containerElement := element.Find("div", gosoup.Attributes{"id": "_7_WAR_organizationnoticeportlet_selectNoticesSearchContainer"})
 	if containerElement == nil {
@@ -91,13 +92,13 @@ func ProcessGetTenderPage(page int, session *azuretls.Session, tendersIT []*dto.
 		dateTime, _ := time.Parse(longForm, dateTimeValue)
 		dateValue := dateTime.Format("2006.01.02")
 		tender := dto.NewTenderDTO(nameValue, hrefValue, dateValue, getHrefID(hrefValue))
-		tendersIT, tenders = tender.AppendTo(tendersIT, tenders)
-		if tender.IsIn(tendersOldAll) {
+		tenders = append(tenders, tender)
+		if data.IsIn(tender, tendersOldAll) {
 			fmt.Println("processGetTenderPage: old tenders contains this", tender)
-			return err, tendersIT, tenders, true
+			return err, tenders, true
 		}
 	}
-	return err, tendersIT, tenders, false
+	return err, tenders, false
 }
 
 func getHrefID(value string) string {

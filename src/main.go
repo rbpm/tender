@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/tealeg/xlsx/v3"
 	"tender/dto"
+	"tender/interfaces/data"
 	"tender/order_page"
 	"tender/tender_page"
 	"time"
@@ -24,12 +25,11 @@ func processTenders(flags *dto.FlagDTO) {
 	var err error
 	var done bool
 	fmt.Println("tenders START")
-	tenders := make([]*dto.TenderDTO, 0)
-	tendersIT := make([]*dto.TenderDTO, 0)
-	tendersOldAll := make([]*dto.TenderDTO, 0)
+	tenders := make([]data.Data, 0)
+	tendersOldAll := make([]data.Data, 0)
 	err, tendersOldAll = readOldAllFile(flags.TenderOldFileName, "przetargi", tendersOldAll)
-	err, tendersIT, tenders = tender_page.ProcessGetTenderPages(flags, err, tendersIT, tenders, done, tendersOldAll)
-	processSaveDataToExcel("przetargi", err, tenders, tendersIT, tendersOldAll, flags)
+	err, tenders = tender_page.ProcessGetTenderPages(flags, err, tenders, done, tendersOldAll)
+	processSaveDataToExcel("przetargi", err, tenders, tendersOldAll, flags)
 	fmt.Println("tenders END")
 }
 
@@ -37,23 +37,22 @@ func processOrders(flags *dto.FlagDTO) {
 	var err error
 	var done bool
 	fmt.Println("orders START")
-	tenders := make([]*dto.TenderDTO, 0)
-	tendersIT := make([]*dto.TenderDTO, 0)
-	tendersOldAll := make([]*dto.TenderDTO, 0)
+	tenders := make([]data.Data, 0)
+	tendersOldAll := make([]data.Data, 0)
 	err, tendersOldAll = readOldAllFile(flags.OrdersOldFileName, "oferty", tendersOldAll)
-	err, tendersIT, tenders = order_page.ProcessGetOrderPages(flags, err, tendersIT, tenders, done, tendersOldAll)
-	processSaveDataToExcel("oferty", err, tenders, tendersIT, tendersOldAll, flags)
+	err, tenders = order_page.ProcessGetOrderPages(flags, err, tenders, done, tendersOldAll)
+	processSaveDataToExcel("oferty", err, tenders, tendersOldAll, flags)
 	fmt.Println("orders END")
 }
 
-func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tendersOldAll []*dto.TenderDTO, flags *dto.FlagDTO) {
+func processSaveDataToExcel(filename string, err error, tenders, tendersOldAll []data.Data, flags *dto.FlagDTO) {
 	var fileAll *xlsx.File
 	var fileIT *xlsx.File
 
 	fmt.Println("processSaveDataToExcel")
 
 	fileIT = xlsx.NewFile()
-	err = processSaveToExcel(filename+" IT", fileIT, tendersIT)
+	err = processSaveITDataToExcel(filename+" IT", fileIT, tenders)
 
 	err = fileIT.Save(filename + "_it_" + fileDateStr() + ".xlsx")
 	if err != nil {
@@ -63,7 +62,7 @@ func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tend
 	if flags.SaveAll {
 		if flags.AppendAll {
 			for _, tender := range tendersOldAll {
-				if !tender.IsIn(tenders) {
+				if !data.IsIn(tender, tenders) {
 					tenders = append(tenders, tender)
 				} else {
 					fmt.Println("processSaveDataToExcel saveAll: there is already this old tender")
@@ -83,19 +82,19 @@ func processSaveDataToExcel(filename string, err error, tenders, tendersIT, tend
 	}
 }
 
-func readOldAllFile(fileName string, sheetName string, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO) {
+func readOldAllFile(fileName string, sheetName string, tendersOldAll []data.Data) (error, []data.Data) {
 	fileOldAll, err := xlsx.OpenFile(fileName)
 	if err == nil {
 		tendersOldAll = readOldAll(sheetName, fileOldAll, tendersOldAll)
 	} else {
 		fmt.Printf("file %s was not found\n", fileName)
-		tendersOldAll = make([]*dto.TenderDTO, 0)
+		tendersOldAll = make([]data.Data, 0)
 	}
 	fmt.Printf("tendersOldAll len: %v\n", len(tendersOldAll))
 	return err, tendersOldAll
 }
 
-func readOldAll(sheetName string, fileOldAll *xlsx.File, tendersOldAll []*dto.TenderDTO) []*dto.TenderDTO {
+func readOldAll(sheetName string, fileOldAll *xlsx.File, tendersOldAll []data.Data) []data.Data {
 	sheet, ok := fileOldAll.Sheet[sheetName]
 	if !ok {
 		panic(errors.New("sheet " + sheetName + " not found"))
@@ -111,7 +110,7 @@ func readOldAll(sheetName string, fileOldAll *xlsx.File, tendersOldAll []*dto.Te
 	return tendersOldAll
 }
 
-func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []*dto.TenderDTO) []*dto.TenderDTO {
+func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []data.Data) []data.Data {
 	nr := 1
 	idCell := r.GetCell(nr)
 	idValue := idCell.Value
@@ -126,18 +125,20 @@ func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []*dto.TenderDTO) []*dto.Tender
 	return tendersOldAll
 }
 
-func processSaveToExcel(sheetName string, file *xlsx.File, tendersIT []*dto.TenderDTO) error {
+func processSaveITDataToExcel(sheetName string, file *xlsx.File, tenders []data.Data) error {
 	sheetIT, err := file.AddSheet(sheetName)
 	setHeader(0, sheetIT)
 	rowIT := 0
-	for _, tendersT := range tendersIT {
-		rowIT++
-		setRowData(0, sheetIT, rowIT, tendersT)
+	for _, tender := range tenders {
+		if tender.IsIT() {
+			rowIT++
+			setRowData(0, sheetIT, rowIT, tender)
+		}
 	}
 	return err
 }
 
-func processSaveAllToExcel(sheetName string, tenders []*dto.TenderDTO, file *xlsx.File) error {
+func processSaveAllToExcel(sheetName string, tenders []data.Data, file *xlsx.File) error {
 	sheet, err := file.AddSheet(sheetName)
 	if err != nil {
 		return err
@@ -147,30 +148,30 @@ func processSaveAllToExcel(sheetName string, tenders []*dto.TenderDTO, file *xls
 	for _, tender := range tenders {
 		rowOther++
 		setRowData(2, sheet, rowOther, tender)
-		if tender.IsIT {
+		if tender.IsIT() {
 			cell, _ := sheet.Cell(rowOther, 0)
 			cell.Value = "IT"
 		}
 		cell, _ := sheet.Cell(rowOther, 1)
-		cell.Value = tender.Id
+		cell.Value = tender.Id()
 	}
 	return err
 }
 
-func setRowData(startCell int, sheet *xlsx.Sheet, r int, tender *dto.TenderDTO) {
+func setRowData(startCell int, sheet *xlsx.Sheet, r int, tender data.Data) {
 	nr := startCell
 	cell, _ := sheet.Cell(r, nr)
-	cell.Value = tender.Date
+	cell.Value = tender.Date()
 
 	cell, _ = sheet.Cell(r, nr+1)
-	cell.SetHyperlink(tender.Href, tender.Href, "")
+	cell.SetHyperlink(tender.Href(), tender.Href(), "")
 	style := cell.GetStyle()
 	style.Font.Underline = true
 	style.Font.Color = "FF0000FF"
 	cell.SetStyle(style)
 
 	cell, _ = sheet.Cell(r, nr+2)
-	cell.Value = tender.Name
+	cell.Value = tender.Name()
 }
 
 func setHeader(startCell int, sheet *xlsx.Sheet) {

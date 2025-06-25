@@ -5,22 +5,23 @@ import (
 	"fmt"
 	"github.com/Noooste/azuretls-client"
 	"tender/dto"
+	"tender/interfaces/data"
 )
 
-func ProcessGetOrderPages(flags *dto.FlagDTO, err error, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, done bool, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO) {
+func ProcessGetOrderPages(flags *dto.FlagDTO, err error, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
 	session := azuretls.NewSession()
 	for page := 1; page <= flags.OrderPages; page++ {
 		fmt.Println("order page: ", page)
-		err, tendersIT, tenders, done = ProcessGetOrderPage(page, session, tendersIT, tenders, tendersOldAll)
+		err, tenders, done = ProcessGetOrderPage(page, session, tenders, tendersOldAll)
 		if done {
 			fmt.Println("done")
 			break
 		}
 	}
-	return err, tendersIT, tenders
+	return err, tenders
 }
 
-func ProcessGetOrderPage(page int, session *azuretls.Session, tendersIT []*dto.TenderDTO, tenders []*dto.TenderDTO, tendersOldAll []*dto.TenderDTO) (error, []*dto.TenderDTO, []*dto.TenderDTO, bool) {
+func ProcessGetOrderPage(page int, session *azuretls.Session, tenders []data.Data, tendersOldAll []data.Data) (error, []data.Data, bool) {
 	var orders []dto.OrderDTO
 	pageStr := fmt.Sprintf("%d", page)
 	response, err := session.Get("https://ezamowienia.gov.pl/mp-readmodels/api/Search/SearchTenders?SortingColumnName=InitiationDate&SortingDirection=DESC&PageNumber=" + pageStr + "&PageSize=50")
@@ -31,15 +32,15 @@ func ProcessGetOrderPage(page int, session *azuretls.Session, tendersIT []*dto.T
 	if err != nil {
 		println(err.Error())
 		println("response:" + response.String())
-		return err, nil, nil, false
+		return err, nil, false
 	}
 	for _, order := range orders {
 		tender := order.GetTenderDTO()
-		tendersIT, tenders = tender.AppendTo(tendersIT, tenders)
-		if tender.IsIn(tendersOldAll) {
+		tenders = append(tenders, tender)
+		if data.IsIn(tender, tendersOldAll) {
 			fmt.Println("processGetOrderPage: old orders contains this:", tender)
-			return err, tendersIT, tenders, true
+			return err, tenders, true
 		}
 	}
-	return err, tendersIT, tenders, false
+	return err, tenders, false
 }
