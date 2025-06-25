@@ -74,6 +74,7 @@ func ProcessGetTenderPage(page int, session *azuretls.Session, tenders []data.Da
 		aTag := element.FindByTag("a")
 		if aTag == nil {
 			fmt.Println("could not find aTag element")
+			return err, tendersOldAll, false
 		}
 		hrefValue, ok := aTag.GetAttribute("href")
 		if !ok {
