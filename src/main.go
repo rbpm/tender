@@ -13,8 +13,8 @@ import (
 
 func main() {
 	flags := dto.NewFlagDTO()
-	processTenders(flags)
 	processOrders(flags)
+	processTenders(flags)
 }
 
 func fileDateStr() string {
