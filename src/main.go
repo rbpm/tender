@@ -71,11 +71,11 @@ func processSaveDataToExcel(filename string, err error, tenders, tendersOldAll [
 		}
 		fileAll = xlsx.NewFile()
 		err = processSaveAllToExcel(filename, tenders, fileAll)
-		err = fileAll.Save(filename + "_all.xlsx")
+		err = fileAll.Save(filename + ".xlsx")
 		if err != nil {
 			fmt.Printf(err.Error())
 		}
-		err = fileAll.Save(filename + "_all_" + fileDateStr() + ".xlsx")
+		err = fileAll.Save(filename + "_" + fileDateStr() + ".xlsx")
 		if err != nil {
 			fmt.Printf(err.Error())
 		}
