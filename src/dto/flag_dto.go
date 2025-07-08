@@ -18,8 +18,8 @@ func NewFlagDTO() *FlagDTO {
 	//max 1000/50=200
 	orderPages := flag.Int("orderPages", 100, "number of order Pages to get")
 	appendAll := flag.Bool("appendAll", false, "append old tenders to new all")
-	tenderOldFileName := flag.String("tenderOldFileName", "przetargi_all.xlsx", "tender old file name")
-	ordersOldFileName := flag.String("orderOldFileName", "oferty_all.xlsx", "order old file name")
+	tenderOldFileName := flag.String("tenderOldFileName", "przetargi.xlsx", "tender old file name")
+	ordersOldFileName := flag.String("orderOldFileName", "oferty.xlsx", "order old file name")
 	flags := FlagDTO{
 		SaveAll:           *saveAll,
 		TenderPages:       *tenderPages,
