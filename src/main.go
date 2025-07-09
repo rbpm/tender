@@ -21,6 +21,10 @@ func fileDateStr() string {
 	return time.Now().Format("20060102")
 }
 
+func dateStr() string {
+	return time.Now().Format("2006-01-02")
+}
+
 func processTenders(flags *dto.FlagDTO) {
 	var err error
 	var done bool
@@ -114,12 +118,15 @@ func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []data.Data) []data.Data {
 	nr := 1
 	idCell := r.GetCell(nr)
 	idValue := idCell.Value
-	dateCell := r.GetCell(nr + 1)
-	dateValue := dateCell.Value
-	hrefCell := r.GetCell(nr + 2)
-	hrefValue := hrefCell.Value
-	nameCell := r.GetCell(nr + 3)
+	nameCell := r.GetCell(nr + 1)
 	nameValue := nameCell.Value
+
+	hrefCell := r.GetCell(nr + 5)
+	hrefValue := hrefCell.Value
+
+	dateCell := r.GetCell(nr + 6)
+	dateValue := dateCell.Value
+
 	tender := dto.NewDataDTO(nameValue, hrefValue, dateValue, idValue)
 	tendersOldAll = append(tendersOldAll, tender)
 	return tendersOldAll
@@ -161,34 +168,56 @@ func processSaveAllToExcel(sheetName string, tenders []data.Data, file *xlsx.Fil
 func setRowData(startCell int, sheet *xlsx.Sheet, r int, tender data.Data) {
 	nr := startCell
 	cell, _ := sheet.Cell(r, nr)
-	cell.Value = tender.Date()
+	cell.Value = tender.Name()
 
 	cell, _ = sheet.Cell(r, nr+1)
+	cell.Value = "WB"
+
+	cell, _ = sheet.Cell(r, nr+2)
+	cell.Value = dateStr()
+
+	cell, _ = sheet.Cell(r, nr+4)
 	cell.SetHyperlink(tender.Href(), tender.Href(), "")
 	style := cell.GetStyle()
 	style.Font.Underline = true
 	style.Font.Color = "FF0000FF"
 	cell.SetStyle(style)
 
-	cell, _ = sheet.Cell(r, nr+2)
-	cell.Value = tender.Name()
+	cell, _ = sheet.Cell(r, nr+5)
+	cell.Value = tender.Date()
+
 }
 
 func setHeader(startCell int, sheet *xlsx.Sheet) {
 	nr := startCell
 	cell, _ := sheet.Cell(0, nr)
-	cell.Value = "data"
-	sheet.SetColWidth(nr+1, nr+1, 10)
+	cell.Value = "Przetarg"
+	sheet.SetColWidth(nr+1, nr+1, 50)
 
 	nr++
 	cell, _ = sheet.Cell(0, nr)
-	cell.Value = "link"
-	sheet.SetColWidth(nr+1, nr+1, 18)
+	cell.Value = "Osoba, która zgłosiła"
+	sheet.SetColWidth(nr+1, nr+1, 25)
 
 	nr++
 	cell, _ = sheet.Cell(0, nr)
-	cell.Value = "nazwa"
-	sheet.SetColWidth(nr+1, nr+1, 100)
+	cell.Value = "Data dodania"
+	sheet.SetColWidth(nr+1, nr+1, 25)
+
+	nr++
+	cell, _ = sheet.Cell(0, nr)
+	cell.Value = "Klient"
+	sheet.SetColWidth(nr+1, nr+1, 25)
+
+	nr++
+	cell, _ = sheet.Cell(0, nr)
+	cell.Value = "Źródło przetargu"
+	sheet.SetColWidth(nr+1, nr+1, 25)
+
+	nr++
+	cell, _ = sheet.Cell(0, nr)
+	cell.Value = "Deadline na złożenie oferty"
+	sheet.SetColWidth(nr+1, nr+1, 25)
 }
 
 func setAllHeader(sheet *xlsx.Sheet) {
