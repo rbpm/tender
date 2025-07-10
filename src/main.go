@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"tender/bk_page"
 	"tender/dto"
+	"tender/frog_page"
 	"tender/interfaces/data"
 	"tender/order_page"
 	"tender/process"
@@ -12,9 +13,22 @@ import (
 
 func main() {
 	flags := dto.NewFlagDTO()
+	processFrog(flags)
 	processBK(flags)
 	processOrders(flags)
 	processTenders(flags)
+}
+
+func processFrog(flags *dto.FlagDTO) {
+	var err error
+	var done bool
+	fmt.Println("frog START")
+	tenders := make([]data.Data, 0)
+	tendersOldAll := make([]data.Data, 0)
+	//err, tendersOldAll = process.ReadOldAllFile(flags.TenderOldFileName, "frog", tendersOldAll)
+	err, tenders = frog_page.ProcessGetFrogPages(flags, err, tenders, done, tendersOldAll)
+	process.ProcessSaveDataToExcel("frog", err, tenders, tendersOldAll, flags)
+	fmt.Println("frog END")
 }
 
 func processTenders(flags *dto.FlagDTO) {
