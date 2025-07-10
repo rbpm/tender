@@ -20,6 +20,8 @@ func IsIn(tenders []Data, tender Data) bool {
 	return false
 }
 
+// "sztucznej inteligencji" - is too much and complicated
+
 func IsIT(name string) bool {
 	lowerName := strings.ToLower(name)
 	return strings.Contains(lowerName, "oprogramowani") ||
