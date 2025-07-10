@@ -30,5 +30,5 @@ type BkDataDTO struct {
 
 func (bk BkDataDTO) GetDataDTO() *DataDTO {
 	href := "https://bazakonkurencyjnosci.funduszeeuropejskie.gov.pl/ogloszenia/" + fmt.Sprintf("%v", bk.Id)
-	return NewDataDTO("BK", bk.Title+"\n"+bk.Content, href, bk.SubmissionDeadline, fmt.Sprintf("%v", bk.Id))
+	return NewDataDTO("bazakonkurencyjnosci", bk.Title+"\n"+bk.Content, href, bk.SubmissionDeadline, fmt.Sprintf("%v", bk.Id))
 }

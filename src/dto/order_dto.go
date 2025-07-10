@@ -23,5 +23,5 @@ type OrderDTO struct {
 
 func (order OrderDTO) GetDataDTO() *DataDTO {
 	href := "https://ezamowienia.gov.pl/mp-client/search/list/" + order.ObjectId
-	return NewDataDTO("EZ", order.Title, href, order.SubmissionOffersDate.Format("2006.01.02"), order.ObjectId)
+	return NewDataDTO("ezamowienia", order.Title, href, order.SubmissionOffersDate.Format("2006.01.02"), order.ObjectId)
 }
