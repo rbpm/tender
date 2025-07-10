@@ -118,8 +118,12 @@ func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []data.Data) []data.Data {
 	nr := 1
 	idCell := r.GetCell(nr)
 	idValue := idCell.Value
+
 	nameCell := r.GetCell(nr + 1)
 	nameValue := nameCell.Value
+
+	srcCell := r.GetCell(nr + 4)
+	srcValue := srcCell.Value
 
 	hrefCell := r.GetCell(nr + 5)
 	hrefValue := hrefCell.Value
@@ -127,7 +131,7 @@ func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []data.Data) []data.Data {
 	dateCell := r.GetCell(nr + 6)
 	dateValue := dateCell.Value
 
-	tender := dto.NewDataDTO(nameValue, hrefValue, dateValue, idValue)
+	tender := dto.NewDataDTO(srcValue, nameValue, hrefValue, dateValue, idValue)
 	tendersOldAll = append(tendersOldAll, tender)
 	return tendersOldAll
 }
@@ -175,6 +179,9 @@ func setRowData(startCell int, sheet *xlsx.Sheet, r int, tender data.Data) {
 
 	cell, _ = sheet.Cell(r, nr+2)
 	cell.Value = dateStr()
+
+	cell, _ = sheet.Cell(r, nr+3)
+	cell.Value = tender.Src()
 
 	cell, _ = sheet.Cell(r, nr+4)
 	cell.SetHyperlink(tender.Href(), tender.Href(), "")

@@ -5,6 +5,7 @@ import (
 )
 
 type DataDTO struct {
+	src  string
 	name string
 	href string
 	date string
@@ -12,9 +13,13 @@ type DataDTO struct {
 	isIT bool
 }
 
-func NewDataDTO(name string, href string, date string, id string) *DataDTO {
-	p := DataDTO{name: name, href: href, date: date, id: id, isIT: data.IsIT(name)}
+func NewDataDTO(src string, name string, href string, date string, id string) *DataDTO {
+	p := DataDTO{src: src, name: name, href: href, date: date, id: id, isIT: data.IsIT(name)}
 	return &p
+}
+
+func (tender *DataDTO) Src() string {
+	return tender.src
 }
 
 func (tender *DataDTO) Name() string {

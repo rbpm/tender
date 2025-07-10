@@ -3,6 +3,7 @@ package data
 import "strings"
 
 type Data interface {
+	Src() string
 	Name() string
 	Href() string
 	Date() string
