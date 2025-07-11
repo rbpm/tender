@@ -7,6 +7,7 @@ import (
 	"tender/interfaces/data"
 	"tender/login_trade_page"
 	"tender/order_page"
+	"tender/pko_page"
 	"tender/process"
 	"tender/tender_page"
 )
@@ -19,8 +20,47 @@ func main() {
 	common = append(common, processBK(flags)...)
 	common = append(common, processFrog(flags)...)
 	common = append(common, processAnimex(flags)...)
+	common = append(common, processBosbank(flags)...)
+	common = append(common, processGemetica(flags)...)
+	common = append(common, processPko(flags)...)
 	processCommon(flags, common)
 }
+
+func processPko(flags *dto.FlagDTO) []data.Data {
+	var err error
+	var done bool
+	fmt.Println("pko START")
+	tenders := make([]data.Data, 0)
+	tendersOldAll := make([]data.Data, 0)
+	err, tendersOldAll = process.ReadOldAllFile(flags.PkoOldFileName, "pko", tendersOldAll)
+	err, tenders = pko_page.ProcessGetPkoPages(flags, err, tenders, done, tendersOldAll)
+	process.ProcessSaveDataToExcel("pko", err, tenders, tendersOldAll, flags)
+	fmt.Println("pko END")
+	return tenders
+}
+
+func processGemetica(flags *dto.FlagDTO) []data.Data {
+	url := "https://platforma-qemetica.logintrade.net/"
+	return processLoginTrade("qemetica", url, flags)
+}
+
+func processBosbank(flags *dto.FlagDTO) []data.Data {
+	url := "https://bosbank.logintrade.net/"
+	return processLoginTrade("bosbank", url, flags)
+}
+
+//func processLotams(flags *dto.FlagDTO) []data.Data {
+//	url := "https://lotams.logintrade.net/"
+//	return processLoginTradeNET("lotams", url, flags)
+//}
+
+// no such page => NET version
+// https://cersanit.logintrade.net/portal,listaZapytaniaOfertowe.html?status_realizacji_zapytania[]=oczekiwanie_ofert&wojewodztwo=wszystkie&search=&search_sort=9&page=1&itemsperpage=100
+//func processCersanit(flags *dto.FlagDTO) []data.Data {
+//	url := "https://cersanit.logintrade.net/"
+//	return processLoginTradeNET("cersanit", url, flags)
+//}
+
 func processAnimex(flags *dto.FlagDTO) []data.Data {
 	url := "https://grupasmithfield.logintrade.net/"
 	return processLoginTrade("animex", url, flags)
@@ -40,7 +80,7 @@ func processLoginTrade(client string, url string, flags *dto.FlagDTO) []data.Dat
 	err, tendersOldAll = process.ReadOldAllFile(flags.AnimexOldFileName, client, tendersOldAll)
 	urlPrefix := url + login_trade_page.DEFAULT_URL_PREFIX
 	urlSuffix := login_trade_page.DEFAULT_URL_SUFIX
-	err, tenders = login_trade_page.ProcessGetLoginTradePages(client, url, login_trade_page.GetDefaultHrefID, urlPrefix, urlSuffix, flags.AnimexPages, err, tenders, done, tendersOldAll)
+	err, tenders = login_trade_page.ProcessGetLoginTradePages(client, url, login_trade_page.GetDefaultHrefID, urlPrefix, urlSuffix, flags.LoginTradePages, err, tenders, done, tendersOldAll)
 	process.ProcessSaveDataToExcel(client, err, tenders, tendersOldAll, flags)
 	fmt.Println(client + " login trade END ***")
 	return tenders

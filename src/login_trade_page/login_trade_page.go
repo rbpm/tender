@@ -37,7 +37,9 @@ func ProcessGetLoginTradePages(client string, url string, getHrefID GetHrefID, u
 func ProcessGetLoginTradePage(client string, url string, getHrefID GetHrefID, urlPrefix string, urlSuffix string, page int, pages int, session *azuretls.Session, tenders []data.Data, tendersOldAll []data.Data) (error, []data.Data, bool) {
 	pageStr := fmt.Sprintf("%d", page)
 
-	response, err := session.Get(urlPrefix + pageStr + urlSuffix)
+	getUrl := urlPrefix + pageStr + urlSuffix
+	fmt.Println(getUrl)
+	response, err := session.Get(getUrl)
 	if err != nil {
 		panic(err)
 	}
