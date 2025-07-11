@@ -1,7 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"log"
+	"os"
 	"tender/bk_page"
 	"tender/dto"
 	"tender/interfaces/data"
@@ -14,6 +17,7 @@ import (
 
 func main() {
 	flags := dto.NewFlagDTO()
+	mkDirIfNotExist(flags.ExcelDir)
 	common := make([]data.Data, 0)
 	common = append(common, processTenders(flags)...)
 	common = append(common, processOrders(flags)...)
@@ -131,4 +135,13 @@ func processCommon(flags *dto.FlagDTO, common []data.Data) {
 	tendersOldAll := make([]data.Data, 0)
 	process.ProcessSaveDataToExcel("common", err, common, tendersOldAll, flags)
 	fmt.Println("common END")
+}
+
+func mkDirIfNotExist(path string) {
+	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
+		err := os.Mkdir(path, os.ModePerm)
+		if err != nil {
+			log.Println(err)
+		}
+	}
 }
