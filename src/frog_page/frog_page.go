@@ -24,6 +24,8 @@ func ProcessGetFrogPages(flags *dto.FlagDTO, err error, tenders []data.Data, don
 func ProcessGetFrogPage(page int, session *azuretls.Session, tenders []data.Data, tendersOldAll []data.Data) (error, []data.Data, bool) {
 	pageStr := fmt.Sprintf("%d", page)
 
+	// https://zabka.logintrade.net/portal,listaZapytaniaOfertowe.html?status_realizacji_zapytania[]=opublikowane&status_realizacji_zapytania[]=oczekiwanie_ofert&status_realizacji_zapytania[]=w_realizacji_po_terminie&status_realizacji_zapytania[]=ocena_ofert&status_realizacji_zapytania[]=zakonczone&status_realizacji_zapytania[]=anulowane&wojewodztwo=wszystkie&search_sort=9&page=2&itemsperpage=10
+
 	response, err := session.Get("https://zabka.logintrade.net/portal,listaZapytaniaOfertowe.html?page=" + pageStr + "&itemsperpage=100&search_sort=9")
 	if err != nil {
 		panic(err)
@@ -62,7 +64,7 @@ func ProcessGetFrogPage(page int, session *azuretls.Session, tenders []data.Data
 		tdElements := element.FindAllByTag("td")
 
 		if tdElements == nil {
-			fmt.Println("table header:\n", element)
+			//fmt.Println("table header:\n", element)
 		} else {
 			if len(tdElements) != expectedTdElementsSize {
 				fmt.Println("wrong number of td elements", len(tdElements))
@@ -73,10 +75,18 @@ func ProcessGetFrogPage(page int, session *azuretls.Session, tenders []data.Data
 					fmt.Println("wrong number of <a> elements:", len(aElements))
 				} else {
 					nameElement := aElements[0]
-					nameValue := nameElement.FirstChild.Data
+					nameValue := ""
+					name := nameElement.FirstChild
+					if name != nil {
+						nameValue = name.Data
+					}
 
 					numberElement := aElements[1]
-					numberValue := numberElement.FirstChild.Data
+					number := numberElement.FirstChild
+					numberValue := ""
+					if number != nil {
+						numberValue = number.Data
+					}
 
 					hrefValue, ok := nameElement.GetAttribute("href")
 					if !ok {
@@ -103,7 +113,7 @@ func ProcessGetFrogPage(page int, session *azuretls.Session, tenders []data.Data
 					}
 					//NewFrogDTO(id , titleName , titleID , href , date , startDate , endDate , frogID , status)
 					frog := dto.NewFrogDTO(getHrefID(hrefValue), nameValue, numberValue, hrefValue, dateValue, startValue, endValue, frogValue, statusValue)
-					fmt.Println(frog)
+					//fmt.Println(frog)
 					tender := frog.GetDataDTO()
 					tenders = append(tenders, tender)
 					if data.IsIn(tendersOldAll, tender) {

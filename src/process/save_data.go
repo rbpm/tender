@@ -151,5 +151,5 @@ func setAllHeader(sheet *xlsx.Sheet) {
 	sheet.SetColWidth(1, 1, 3)
 	cell, _ = sheet.Cell(0, 1)
 	cell.Value = "ID"
-	sheet.SetColWidth(2, 2, 25)
+	sheet.SetColWidth(2, 2, 30)
 }
