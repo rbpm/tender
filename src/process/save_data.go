@@ -17,7 +17,7 @@ func ProcessSaveDataToExcel(filename string, err error, tenders, tendersOldAll [
 	fileIT = xlsx.NewFile()
 	err = processSaveITDataToExcel(filename+" IT", fileIT, tenders)
 
-	err = fileIT.Save(filename + "_it_" + fileDateStr() + ".xlsx")
+	err = fileIT.Save(flags.ExcelDir + filename + "_it_" + fileDateStr() + ".xlsx")
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
@@ -34,11 +34,11 @@ func ProcessSaveDataToExcel(filename string, err error, tenders, tendersOldAll [
 		}
 		fileAll = xlsx.NewFile()
 		err = processSaveAllToExcel(filename, tenders, fileAll)
-		err = fileAll.Save(filename + ".xlsx")
+		err = fileAll.Save(flags.ExcelDir + filename + ".xlsx")
 		if err != nil {
 			fmt.Printf(err.Error())
 		}
-		err = fileAll.Save(filename + "_" + fileDateStr() + ".xlsx")
+		err = fileAll.Save(flags.ExcelDir + filename + "_" + fileDateStr() + ".xlsx")
 		if err != nil {
 			fmt.Printf(err.Error())
 		}

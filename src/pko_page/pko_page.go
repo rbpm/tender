@@ -40,7 +40,7 @@ func ProcessGetPkoPage(page int, session *azuretls.Session, tenders []data.Data,
 			tender := pko.GetDataDTO()
 			tenders = append(tenders, tender)
 			if data.IsIn(tendersOldAll, tender) {
-				fmt.Println("processGetPkoPage: old orders contains this:", tender)
+				fmt.Println("processGetPkoPage: old pko contains this:", tender)
 				return err, tenders, true
 			}
 		}

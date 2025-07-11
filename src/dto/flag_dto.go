@@ -10,6 +10,7 @@ type FlagDTO struct {
 	LoginTradePages   int
 	PkoPages          int
 	AppendAll         bool
+	ExcelDir          string
 	TenderOldFileName string
 	OrdersOldFileName string
 	BkOldFileName     string
@@ -28,6 +29,7 @@ func NewFlagDTO() *FlagDTO {
 	loginTradePages := flag.Int("loginTradePages", 100, "number of Login Trade Pages to get")
 	pkoPages := flag.Int("pkoPages", 100, "number of PKO Pages to get")
 	appendAll := flag.Bool("appendAll", false, "append old tenders to new all")
+	excelDir := flag.String("excelDir", "excel/", "excel directory")
 	tenderOldFileName := flag.String("tenderOldFileName", "przetargi.xlsx", "tender old file name")
 	ordersOldFileName := flag.String("orderOldFileName", "oferty.xlsx", "order old file name")
 	bkOldFileName := flag.String("bkOldFileName", "bk.xlsx", "bk old file name")
@@ -42,6 +44,7 @@ func NewFlagDTO() *FlagDTO {
 		LoginTradePages:   *loginTradePages,
 		PkoPages:          *pkoPages,
 		AppendAll:         *appendAll,
+		ExcelDir:          *excelDir,
 		TenderOldFileName: *tenderOldFileName,
 		OrdersOldFileName: *ordersOldFileName,
 		BkOldFileName:     *bkOldFileName,
