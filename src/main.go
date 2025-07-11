@@ -21,36 +21,28 @@ func main() {
 	common = append(common, processAnimex(flags)...)
 	processCommon(flags, common)
 }
-
 func processAnimex(flags *dto.FlagDTO) []data.Data {
-	var err error
-	var done bool
-	fmt.Println("Animex START")
-	tenders := make([]data.Data, 0)
-	tendersOldAll := make([]data.Data, 0)
-	err, tendersOldAll = process.ReadOldAllFile(flags.AnimexOldFileName, "animex", tendersOldAll)
-	urlPrefix := "https://grupasmithfield.logintrade.net/" + login_trade_page.DEFAULT_URL_PREFIX
-	urlSuffix := login_trade_page.DEFAULT_URL_SUFIX
 	url := "https://grupasmithfield.logintrade.net/"
-	err, tenders = login_trade_page.ProcessGetLoginTradePages("animex", url, login_trade_page.GetDefaultHrefID, urlPrefix, urlSuffix, flags.AnimexPages, err, tenders, done, tendersOldAll)
-	process.ProcessSaveDataToExcel("animex", err, tenders, tendersOldAll, flags)
-	fmt.Println("Animex END")
-	return tenders
+	return processLoginTrade("animex", url, flags)
 }
 
 func processFrog(flags *dto.FlagDTO) []data.Data {
+	url := "https://zabka.logintrade.net/"
+	return processLoginTrade("frog", url, flags)
+}
+
+func processLoginTrade(client string, url string, flags *dto.FlagDTO) []data.Data {
 	var err error
 	var done bool
-	fmt.Println("frog START")
+	fmt.Println(client + " login trade START ***")
 	tenders := make([]data.Data, 0)
 	tendersOldAll := make([]data.Data, 0)
-	err, tendersOldAll = process.ReadOldAllFile(flags.FrogOldFileName, "frog", tendersOldAll)
-	urlPrefix := "https://zabka.logintrade.net/" + login_trade_page.DEFAULT_URL_PREFIX
+	err, tendersOldAll = process.ReadOldAllFile(flags.AnimexOldFileName, client, tendersOldAll)
+	urlPrefix := url + login_trade_page.DEFAULT_URL_PREFIX
 	urlSuffix := login_trade_page.DEFAULT_URL_SUFIX
-	url := "https://zabka.logintrade.net/"
-	err, tenders = login_trade_page.ProcessGetLoginTradePages("zabka", url, login_trade_page.GetDefaultHrefID, urlPrefix, urlSuffix, flags.FrogPages, err, tenders, done, tendersOldAll)
-	process.ProcessSaveDataToExcel("frog", err, tenders, tendersOldAll, flags)
-	fmt.Println("frog END")
+	err, tenders = login_trade_page.ProcessGetLoginTradePages(client, url, login_trade_page.GetDefaultHrefID, urlPrefix, urlSuffix, flags.AnimexPages, err, tenders, done, tendersOldAll)
+	process.ProcessSaveDataToExcel(client, err, tenders, tendersOldAll, flags)
+	fmt.Println(client + " login trade END ***")
 	return tenders
 }
 
