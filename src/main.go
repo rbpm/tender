@@ -41,12 +41,12 @@ func processPko(flags *dto.FlagDTO) []data.Data {
 
 func processGemetica(flags *dto.FlagDTO) []data.Data {
 	url := "https://platforma-qemetica.logintrade.net/"
-	return processLoginTrade("qemetica", url, flags)
+	return processLoginTrade("qemetica", url, flags, "qemetica.xlsx")
 }
 
 func processBosbank(flags *dto.FlagDTO) []data.Data {
 	url := "https://bosbank.logintrade.net/"
-	return processLoginTrade("bosbank", url, flags)
+	return processLoginTrade("bosbank", url, flags, "bosbank.xlsx")
 }
 
 //func processLotams(flags *dto.FlagDTO) []data.Data {
@@ -63,21 +63,21 @@ func processBosbank(flags *dto.FlagDTO) []data.Data {
 
 func processAnimex(flags *dto.FlagDTO) []data.Data {
 	url := "https://grupasmithfield.logintrade.net/"
-	return processLoginTrade("animex", url, flags)
+	return processLoginTrade("animex", url, flags, "animex.xlsx")
 }
 
 func processFrog(flags *dto.FlagDTO) []data.Data {
 	url := "https://zabka.logintrade.net/"
-	return processLoginTrade("frog", url, flags)
+	return processLoginTrade("frog", url, flags, "frog.xlsx")
 }
 
-func processLoginTrade(client string, url string, flags *dto.FlagDTO) []data.Data {
+func processLoginTrade(client string, url string, flags *dto.FlagDTO, oldFileName string) []data.Data {
 	var err error
 	var done bool
 	fmt.Println(client + " login trade START ***")
 	tenders := make([]data.Data, 0)
 	tendersOldAll := make([]data.Data, 0)
-	err, tendersOldAll = process.ReadOldAllFile(flags.AnimexOldFileName, client, tendersOldAll)
+	err, tendersOldAll = process.ReadOldAllFile(oldFileName, client, tendersOldAll)
 	urlPrefix := url + login_trade_page.DEFAULT_URL_PREFIX
 	urlSuffix := login_trade_page.DEFAULT_URL_SUFIX
 	err, tenders = login_trade_page.ProcessGetLoginTradePages(client, url, login_trade_page.GetDefaultHrefID, urlPrefix, urlSuffix, flags.LoginTradePages, err, tenders, done, tendersOldAll)
