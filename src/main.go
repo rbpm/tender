@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"tender/bk_page"
 	"tender/dto"
@@ -141,7 +140,7 @@ func mkDirIfNotExist(path string) {
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(path, os.ModePerm)
 		if err != nil {
-			log.Println(err)
+			fmt.Println(err)
 		}
 	}
 }
