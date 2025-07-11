@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"tender/bk_page"
 	"tender/dto"
-	"tender/frog_page"
 	"tender/interfaces/data"
+	"tender/login_trade_page"
 	"tender/order_page"
 	"tender/process"
 	"tender/tender_page"
@@ -17,21 +17,41 @@ func main() {
 	common = append(common, processTenders(flags)...)
 	common = append(common, processOrders(flags)...)
 	common = append(common, processBK(flags)...)
-	processFrog(flags)
+	common = append(common, processFrog(flags)...)
+	common = append(common, processAnimex(flags)...)
 	processCommon(flags, common)
 }
 
-// TODO problem with Frog page url https://zabka... (bad content/sort/dates/state)
-func processFrog(flags *dto.FlagDTO) {
+func processAnimex(flags *dto.FlagDTO) []data.Data {
+	var err error
+	var done bool
+	fmt.Println("Animex START")
+	tenders := make([]data.Data, 0)
+	tendersOldAll := make([]data.Data, 0)
+	err, tendersOldAll = process.ReadOldAllFile(flags.AnimexOldFileName, "animex", tendersOldAll)
+	urlPrefix := "https://grupasmithfield.logintrade.net/" + login_trade_page.DEFAULT_URL_PREFIX
+	urlSuffix := login_trade_page.DEFAULT_URL_SUFIX
+	url := "https://grupasmithfield.logintrade.net/"
+	err, tenders = login_trade_page.ProcessGetLoginTradePages("animex", url, login_trade_page.GetDefaultHrefID, urlPrefix, urlSuffix, flags.AnimexPages, err, tenders, done, tendersOldAll)
+	process.ProcessSaveDataToExcel("animex", err, tenders, tendersOldAll, flags)
+	fmt.Println("Animex END")
+	return tenders
+}
+
+func processFrog(flags *dto.FlagDTO) []data.Data {
 	var err error
 	var done bool
 	fmt.Println("frog START")
 	tenders := make([]data.Data, 0)
 	tendersOldAll := make([]data.Data, 0)
 	err, tendersOldAll = process.ReadOldAllFile(flags.FrogOldFileName, "frog", tendersOldAll)
-	err, tenders = frog_page.ProcessGetFrogPages(flags, err, tenders, done, tendersOldAll)
+	urlPrefix := "https://zabka.logintrade.net/" + login_trade_page.DEFAULT_URL_PREFIX
+	urlSuffix := login_trade_page.DEFAULT_URL_SUFIX
+	url := "https://zabka.logintrade.net/"
+	err, tenders = login_trade_page.ProcessGetLoginTradePages("zabka", url, login_trade_page.GetDefaultHrefID, urlPrefix, urlSuffix, flags.FrogPages, err, tenders, done, tendersOldAll)
 	process.ProcessSaveDataToExcel("frog", err, tenders, tendersOldAll, flags)
 	fmt.Println("frog END")
+	return tenders
 }
 
 func processBK(flags *dto.FlagDTO) []data.Data {

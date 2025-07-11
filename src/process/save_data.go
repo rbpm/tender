@@ -116,7 +116,7 @@ func setHeader(startCell int, sheet *xlsx.Sheet) {
 	nr := startCell
 	cell, _ := sheet.Cell(0, nr)
 	cell.Value = "Przetarg"
-	sheet.SetColWidth(nr+1, nr+1, 50)
+	sheet.SetColWidth(nr+1, nr+1, 75)
 
 	nr++
 	cell, _ = sheet.Cell(0, nr)
@@ -151,5 +151,5 @@ func setAllHeader(sheet *xlsx.Sheet) {
 	sheet.SetColWidth(1, 1, 3)
 	cell, _ = sheet.Cell(0, 1)
 	cell.Value = "ID"
-	sheet.SetColWidth(2, 2, 30)
+	sheet.SetColWidth(2, 2, 40)
 }

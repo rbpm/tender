@@ -1,4 +1,4 @@
-package frog_page
+package login_trade_page
 
 import (
 	"fmt"
@@ -8,11 +8,24 @@ import (
 	"tender/interfaces/data"
 )
 
-func ProcessGetFrogPages(flags *dto.FlagDTO, err error, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
+const DEFAULT_URL_PREFIX = "portal,listaZapytaniaOfertowe.html?status_realizacji_zapytania[]=oczekiwanie_ofert&wojewodztwo=wszystkie&search=&search_sort=9&page="
+const DEFAULT_URL_SUFIX = "&itemsperpage=100"
+
+type GetHrefID func(string) string
+
+func GetDefaultHrefID(value string) string {
+	if len(value) < 39 {
+		return "len err"
+	}
+	id := value[34 : len(value)-5]
+	return id
+}
+
+func ProcessGetLoginTradePages(client string, url string, getHrefID GetHrefID, urlPrefix string, urlSuffix string, pages int, err error, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
 	session := azuretls.NewSession()
-	for page := 1; page <= flags.FrogPages; page++ {
-		fmt.Println("frog page: ", page)
-		err, tenders, done = ProcessGetFrogPage(page, session, tenders, tendersOldAll)
+	for page := 1; page <= pages; page++ {
+		fmt.Println("loginTrade page: ", page)
+		err, tenders, done = ProcessGetLoginTradePage(client, url, getHrefID, urlPrefix, urlSuffix, page, pages, session, tenders, tendersOldAll)
 		if done {
 			fmt.Println("done")
 			break
@@ -21,12 +34,10 @@ func ProcessGetFrogPages(flags *dto.FlagDTO, err error, tenders []data.Data, don
 	return err, tenders
 }
 
-func ProcessGetFrogPage(page int, session *azuretls.Session, tenders []data.Data, tendersOldAll []data.Data) (error, []data.Data, bool) {
+func ProcessGetLoginTradePage(client string, url string, getHrefID GetHrefID, urlPrefix string, urlSuffix string, page int, pages int, session *azuretls.Session, tenders []data.Data, tendersOldAll []data.Data) (error, []data.Data, bool) {
 	pageStr := fmt.Sprintf("%d", page)
 
-	// https://zabka.logintrade.net/portal,listaZapytaniaOfertowe.html?status_realizacji_zapytania[]=opublikowane&status_realizacji_zapytania[]=oczekiwanie_ofert&status_realizacji_zapytania[]=w_realizacji_po_terminie&status_realizacji_zapytania[]=ocena_ofert&status_realizacji_zapytania[]=zakonczone&status_realizacji_zapytania[]=anulowane&wojewodztwo=wszystkie&search_sort=9&page=2&itemsperpage=10
-
-	response, err := session.Get("https://zabka.logintrade.net/portal,listaZapytaniaOfertowe.html?page=" + pageStr + "&itemsperpage=100&search_sort=9")
+	response, err := session.Get(urlPrefix + pageStr + urlSuffix)
 	if err != nil {
 		panic(err)
 	}
@@ -49,13 +60,11 @@ func ProcessGetFrogPage(page int, session *azuretls.Session, tenders []data.Data
 		fmt.Println("could not find table body element")
 	}
 	expectedTag := "tr"
-	expectedElementsSize := 101
+	expectedElementsSize := pages + 1
 	expectedTdElementsSize := 6
 	expectedAElementsSize := 2
 	elements := tableBodyElement.FindAllByTag(expectedTag)
-	if len(elements) != expectedElementsSize {
-		fmt.Printf("wrong number of elements found: %d, expected number: %d\n", len(elements), expectedElementsSize)
-	}
+
 	for _, element := range elements {
 		if element.Data != expectedTag {
 			fmt.Printf("wrong element tag, expected: %s, actual: %s", expectedTag, element.Data)
@@ -102,8 +111,8 @@ func ProcessGetFrogPage(page int, session *azuretls.Session, tenders []data.Data
 					endElement := tdElements[3]
 					endValue := endElement.FirstChild.Data
 
-					frogElement := tdElements[4]
-					frogValue := frogElement.FirstChild.Data
+					ClientElement := tdElements[4]
+					clientValue := ClientElement.FirstChild.Data
 
 					statusElement := tdElements[5]
 					spanElement := statusElement.FindByTag("span")
@@ -111,10 +120,10 @@ func ProcessGetFrogPage(page int, session *azuretls.Session, tenders []data.Data
 					if !ok {
 						fmt.Printf("span attribute: does not exist")
 					}
-					//NewFrogDTO(id , titleName , titleID , href , date , startDate , endDate , frogID , status)
-					frog := dto.NewFrogDTO(getHrefID(hrefValue), nameValue, numberValue, hrefValue, dateValue, startValue, endValue, frogValue, statusValue)
-					//fmt.Println(frog)
-					tender := frog.GetDataDTO()
+					//NewLoginTradeDTO(id , titleName , titleID , href , date , startDate , endDate , clientID , status)
+					loginTradeDto := dto.NewLoginTradeDTO(url, getHrefID(hrefValue), nameValue, numberValue, hrefValue, dateValue, startValue, endValue, clientValue, statusValue)
+
+					tender := loginTradeDto.GetDataDTO(client)
 					tenders = append(tenders, tender)
 					if data.IsIn(tendersOldAll, tender) {
 						fmt.Println("processGetTenderPage: old tenders contains this", tender)
@@ -124,13 +133,9 @@ func ProcessGetFrogPage(page int, session *azuretls.Session, tenders []data.Data
 			}
 		}
 	}
-	return err, tenders, false
-}
-
-func getHrefID(value string) string {
-	if len(value) < 39 {
-		return "len err"
+	if len(elements) != expectedElementsSize {
+		fmt.Printf("done: last page number of elements found: %d, expected number: %d\n", len(elements), expectedElementsSize)
+		return err, tenders, true
 	}
-	id := value[34 : len(value)-5]
-	return id
+	return err, tenders, false
 }
