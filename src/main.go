@@ -9,6 +9,7 @@ import (
 	"tender/interfaces/data"
 	"tender/login_trade_page"
 	"tender/order_page"
+	"tender/orlen_page"
 	"tender/pko_page"
 	"tender/process"
 	"tender/tender_page"
@@ -26,7 +27,21 @@ func main() {
 	common = append(common, processBosbank(flags)...)
 	common = append(common, processGemetica(flags)...)
 	common = append(common, processPko(flags)...)
+	common = append(common, processOrlen(flags)...)
 	processCommon(flags, common)
+}
+
+func processOrlen(flags *dto.FlagDTO) []data.Data {
+	var err error
+	var done bool
+	fmt.Println("orlen START")
+	tenders := make([]data.Data, 0)
+	tendersOldAll := make([]data.Data, 0)
+	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+flags.OrlenOldFileName, "orlen", tendersOldAll)
+	err, tenders = orlen_page.ProcessGetOrlenPages(flags, err, tenders, done, tendersOldAll)
+	process.ProcessSaveDataToExcel("orlen", err, tenders, tendersOldAll, flags)
+	fmt.Println("orlen END")
+	return tenders
 }
 
 func processPko(flags *dto.FlagDTO) []data.Data {

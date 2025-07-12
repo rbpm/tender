@@ -9,6 +9,7 @@ type FlagDTO struct {
 	BkPages           int
 	LoginTradePages   int
 	PkoPages          int
+	OrlenPages        int
 	AppendAll         bool
 	ExcelDir          string
 	TenderOldFileName string
@@ -17,6 +18,7 @@ type FlagDTO struct {
 	FrogOldFileName   string
 	AnimexOldFileName string
 	PkoOldFileName    string
+	OrlenOldFileName  string
 }
 
 func NewFlagDTO() *FlagDTO {
@@ -28,6 +30,7 @@ func NewFlagDTO() *FlagDTO {
 	bkPages := flag.Int("bkPages", 0, "number of bk Pages to get, 0 when total")
 	loginTradePages := flag.Int("loginTradePages", 100, "number of Login Trade Pages to get")
 	pkoPages := flag.Int("pkoPages", 100, "number of PKO Pages to get")
+	orlenPages := flag.Int("orlenPages", 100, "number of Orlen Pages to get")
 	appendAll := flag.Bool("appendAll", false, "append old tenders to new all")
 	excelDir := flag.String("excelDir", "excel/", "excel directory")
 	tenderOldFileName := flag.String("tenderOldFileName", "przetargi.xlsx", "tender old file name")
@@ -36,6 +39,7 @@ func NewFlagDTO() *FlagDTO {
 	frogOldFileName := flag.String("frogOldFileName", "frog.xlsx", "frog old file name")
 	animexOldFileName := flag.String("animexOldFileName", "animex.xlsx", "animex old file name")
 	pkoOldFileName := flag.String("pkoOldFileName", "pko.xlsx", "pko old file name")
+	orlenOldFileName := flag.String("orlenOldFileName", "orlen.xlsx", "Orlen old file name")
 	flags := FlagDTO{
 		SaveAll:           *saveAll,
 		TenderPages:       *tenderPages,
@@ -43,6 +47,7 @@ func NewFlagDTO() *FlagDTO {
 		BkPages:           *bkPages,
 		LoginTradePages:   *loginTradePages,
 		PkoPages:          *pkoPages,
+		OrlenPages:        *orlenPages,
 		AppendAll:         *appendAll,
 		ExcelDir:          *excelDir,
 		TenderOldFileName: *tenderOldFileName,
@@ -50,6 +55,7 @@ func NewFlagDTO() *FlagDTO {
 		BkOldFileName:     *bkOldFileName,
 		FrogOldFileName:   *frogOldFileName,
 		AnimexOldFileName: *animexOldFileName,
-		PkoOldFileName:    *pkoOldFileName}
+		PkoOldFileName:    *pkoOldFileName,
+		OrlenOldFileName:  *orlenOldFileName}
 	return &flags
 }
