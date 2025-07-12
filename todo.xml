@@ -1,0 +1,237 @@
+<div class="view view-tenders-normal view-id-tenders_normal view-display-id-block_tenders_future js-view-dom-id-0534474bbb5e8add417d226807501a98bef0682dc080a6e60d68f3c2ba52e181">
+
+
+    <div class="view-filters">
+        <form class="views-exposed-form bef-exposed-form" data-drupal-selector="views-exposed-form-tenders-normal-block-tenders-future" action="/pl/przetargi-nieograniczone" method="get" id="views-exposed-form-tenders-normal-block-tenders-future" accept-charset="UTF-8">
+            <div class="form--inline clearfix">
+                <div class="js-form-item form-item js-form-type-textfield form-type-textfield js-form-item-title form-item-title">
+                    <label for="edit-title--QQhZxEiRV_E">Tytuł</label>
+                    <input data-drupal-selector="edit-title" type="text" id="edit-title--QQhZxEiRV_E" name="title" value="" size="30" maxlength="128" class="form-text" />
+
+                </div>
+                <div class="js-form-item form-item js-form-type-date form-type-date js-form-item-field-response-deadline-value-start form-item-field-response-deadline-value-start">
+                    <label for="edit-field-response-deadline-value-start--ZOZf-tEcQFk">Termin od</label>
+                    <input placeholder="np.: 27/07/2022" class="bef-datepicker form-date" autocomplete="off" data-drupal-selector="edit-field-response-deadline-value-start" type="date" id="edit-field-response-deadline-value-start--ZOZf-tEcQFk" name="field_response_deadline_value_start" value="" size="30" />
+
+                </div>
+                <div class="js-form-item form-item js-form-type-date form-type-date js-form-item-field-response-deadline-value-end form-item-field-response-deadline-value-end">
+                    <label for="edit-field-response-deadline-value-end--DvfIfgC8vH0">Termin do</label>
+                    <input placeholder="np.: 27/07/2022" class="bef-datepicker form-date" autocomplete="off" data-drupal-selector="edit-field-response-deadline-value-end" type="date" id="edit-field-response-deadline-value-end--DvfIfgC8vH0" name="field_response_deadline_value_end" value="" size="30" />
+
+                </div>
+                <div class="js-form-item form-item js-form-type-select form-type-select js-form-item-field-product-category-target-id form-item-field-product-category-target-id">
+                    <label for="edit-field-product-category-target-id--80hqZePrHzg">Kategoria</label>
+                    <select data-drupal-selector="edit-field-product-category-target-id" id="edit-field-product-category-target-id--80hqZePrHzg" name="field_product_category_target_id" class="form-select"><option value="All" selected="selected">-Wszystkie-</option><option value="107">AKPiA i elektronika</option><option value="172">Asortyment BHP i odzież</option><option value="182">Asortyment BHP i odzież - dostawy</option><option value="183">Asortyment BHP i odzież - usługi</option><option value="166">Autobusy</option><option value="173">Biuro</option><option value="120">Budowa i modernizacje maszyn wyciągowych</option><option value="110">Chemia pozostała</option><option value="125">Części do SMG</option><option value="122">Części i podzespoły maszyn wyciągowych</option><option value="153">Części zamienne dla instalacji i urządzeń ciągu technologicznego hut</option><option value="156">Części zamienne dla istalacji i urządzeń ciągu technologicznego ZWR</option><option value="158">Dostawy materiałów budowlanych</option><option value="174">Drewno</option><option value="108">Elektronika</option><option value="106">Elektryka pozostała</option><option value="98">Energetyka, obiekty elektroenergetyczne na powierzchni</option><option value="89">Gazy</option><option value="119">Głębienie i budowa szybów górniczych</option><option value="149">Inwestycje w hutach dot. instalacji i urządzeń walcowni oraz miedzi beztlenowej</option><option value="145">Inwestycje w hutach dot. instalacji i urządzeń wentylacyjnych i sprężających (wentylatory, sprężarki, turbodmuchawy,  instalacje powietrza, urządzenia wentylacyjno-klimatyzacyjne)</option><option value="143">Inwestycje w hutach dot. urządzeń dźwignicowych (suwnice, żurawiki, wciągniki, torowiska)</option><option value="141">Inwestycje w hutach dot. urządzeń i agregatów hutniczych (piece, instalacje około piecowe, maszyny rozlewnicze, kocioł odzysknicowy)</option><option value="147">Inwestycje w hutach dot. urządzeń i instalacji dla fabryk kwasu siarkowego (skrubery, elektrofiltry, wieże absorpcyjne, zbiorniki, wymienniki ciepła, aparaty kontaktowe, instalacje sub. nieb., stanowiska załadowcze, nalewaki, pompy chemiczne)</option><option value="148">Inwestycje w hutach dot. urządzeń i instalacji elektrorafinacji</option><option value="142">Inwestycje w hutach dot. urządzeń i instalacji odpylających (odpylnie, filtry workowe, elektrofiltry, skrubery, chłodnice , gazociągi, kanały, kominy)</option><option value="144">Inwestycje w hutach dot. urządzeń i instalacji transportu materiałów (przenośniki: taśmowe, zgrzebłowe, kubełkowe, śrubowe, łańcuchowo rurowe; przesypy, kruszarki, dozowniki, pompy pneumatyczne, przesiewacze, kraty, instalacje transportowe)</option><option value="146">Inwestycje w hutach dot. węzłów suszących materiały (suszarnie, prasy, instalacje prażenia )</option><option value="97">IT- cyberbezpieczeństwo</option><option value="93">IT- sieci komputerowe, Internet</option><option value="94">IT- środki łączności</option><option value="92">IT- systemy i usługi informatyczne</option><option value="91">IT- urządzenia obliczeniowe i peryferyjne</option><option value="95">IT- usługi telekomunikacji</option><option value="96">IT- zabezpieczenie techniczne</option><option value="99">Kable i przewody elektryczne, linie kablowe i przesyłowe na powierzchni</option><option value="124">Klimatyzacja i wentylacja pod ziemią</option><option value="87">Koks, węgiel</option><option value="123">Liny wyciągowe</option><option value="168">Maszyny budowlane oraz transportowe na powierzchni (wywrotki, naczepy, zestawy ciągnikowe)</option><option value="128">Maszyny górnicze</option><option value="169">Maszyny i pojazdy budowlane specjalistyczne (spychy, koparki, ładowarki, walce, wozy wiertnicze, gruszki, itp..)</option><option value="171">Maszyny i pojazdy specjalistyczne związane z obsługą kolei (wagony…)</option><option value="170">Maszyny pozostałe: ciągniki rolnicze, wózki widłowe, przyczepki, podnośniki, wózki elektryczne, itp..</option><option value="154">Materiały ogniotrwałe</option><option value="109">Materiały technologiczne</option><option value="112">Materiały wiertnicze pod ziemię</option><option value="184">MCZ - dostawy</option><option value="185">MCZ - usługi</option><option value="157">Mielniki</option><option value="186">Narzędzia i sprzęt warsztatowy</option><option value="161">Normalia i elementy złączne</option><option value="111">Obudowa Górnicza</option><option value="175">Ochrona mienia</option><option value="90">Oleje i smary</option><option value="187">Opakowania (kartony, folia, itp.)</option><option value="127">Opony do SMG</option><option value="188">Oprogramowanie i subskrypcje</option><option value="105">Oświetlenie</option><option value="88">Paliwa</option><option value="167">Pojazdy specjalistyczne (staż pożarna, pogotowie górnicze, auta zabudowane, karetki)</option><option value="100">Pompy elektryczne i części zamienne do pomp</option><option value="150">Pozostałe inwestycje dotyczące instalacji przemysłowych, technologicznych w hutach</option><option value="114">Przenośniki do transportu materiałów</option><option value="155">Remonty i inwestycje dot. instalacji i urządzeń a także utrzymanie ruchu ZWR (m.in. dotyczące rozdrabialni, młynowni i flotacji oraz suszarni)</option><option value="140">Remonty w hutach - instalacji i urządzeń walcowni oraz miedzi beztlenowej</option><option value="135">Remonty w hutach - instalacji i urządzeń wentylacyjnych i sprężających (wentylatory, sprężarki, turbodmuchawy, instalacje powietrza, urządzenia wentylacyjno-klimatyzacyjne)</option><option value="139">Remonty w hutach - pompowni i instalacji wodnych  (pompy, zbiorniki, instalacje wodnokanalizacyjne, chłodnie, instalacje zasilające i powrotne, zbiorniki , przepompownie, filtry)</option><option value="133">Remonty w hutach - urządzeń dźwignicowych (suwnice, żurawiki, wciągniki, torowiska)</option><option value="131">Remonty w hutach - urządzeń i agregatów hutniczych (piece, instalacje około piecowe, maszyny rozlewnicze, kocioł odzysknicowy)</option><option value="137">Remonty w hutach - urządzeń i instalacji dla fabryk kwasu siarkowego (skrubery, elektrofiltry, wieże absorpcyjne, zbiorniki, wymienniki ciepła, aparaty kontaktowe, instalacje sub. nieb., stanowiska załadowcze, nalewaki, pompy chemiczne)</option><option value="138">Remonty w hutach - urządzeń i instalacji elektrorafinacji</option><option value="132">Remonty w hutach - urządzeń i instalacji odpylających (odpylnie, filtry workowe, elektrofiltry, skrubery, chłodnice , gazociągi, kanały, kominy)</option><option value="134">Remonty w hutach - urządzeń i instalacji transportu materiałów (przenośniki: taśmowe, zgrzebłowe, kubełkowe, śrubowe, łańcuchowo rurowe; przesypy, kruszarki, dozowniki, pompy pneumatyczne, przesiewacze, kraty, instalacje transportowe)</option><option value="136">Remonty w hutach - węzłów suszących materiały (suszarnie, prasy, instalacje prażenia )</option><option value="181">Roboty budowlane</option><option value="115">Roboty chodnikowe</option><option value="116">Roboty górniczo-budowlane</option><option value="113">Roboty Strzałowe</option><option value="117">Roboty wiertnicze dołowe</option><option value="118">Roboty wiertnicze powierzchniowe</option><option value="130">Roboty  montażowe</option><option value="101">Rozdzielnice elektryczne i rozdzielnie</option><option value="159">Rury i armatura (dostawy)</option><option value="165">Samochody ciężarowe (zestawy ciągnikowe, wywrotki, cysterny - wszystkie powyżej 3,5 DMC)</option><option value="164">Samochody do 3.5 DMC (wszystkie)</option><option value="121">Serwis maszyn wyciągowych</option><option value="129">Serwisy i remonty SMG</option><option value="102">Silniki elektryczne</option><option value="103">Stacje transformatorowe i transformatory</option><option value="126">Szynowe wozy kopalniane</option><option value="177">Usługi doradcze</option><option value="179">Usługi geodezyjne i kartograficzne</option><option value="180">Usługi laboratoryjne</option><option value="176">Usługi porządkowe i pralnicze</option><option value="151">Usługi projektowe dot. inwestycji i remontów w hutach i ZWR (analizy, ekspertyzy, koncepcje, projekty budowlane i techniczne)</option><option value="189">Usługi remontowe, serwisowe maszyn i urządzeń na powierzchni</option><option value="178">Usługi szkoleniowe</option><option value="163">Usługi transportowe (przewozy pracownicze, towarowe, itp.)</option><option value="152">Utrzymanie ruchu hut</option><option value="104">Wentylatory i części zamienne do wentylatorów</option><option value="162">Wyroby metalowe i hutnicze</option><option value="160">Łożyska</option></select>
+                </div>
+                <div data-drupal-selector="edit-actions" class="form-actions js-form-wrapper form-wrapper" id="edit-actions--RIzAjHK3Jjc"><input data-drupal-selector="edit-submit-tenders-normal-vmoxasnxka4" type="submit" id="edit-submit-tenders-normal--VMoxAsNXKa4" value="Zastosuj" class="button js-form-submit form-submit" />
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="view-content">
+        <table class="views-table views-view-table cols-5">
+            <thead>
+                <tr>
+                    <th id="view-field-start-date-table-column--Ow_Idxh3fSg" class="views-field views-field-field-start-date" scope="col">Data publikacji</th>
+                    <th id="view-field-response-deadline-table-column---zgRrhElrI4" class="views-field views-field-field-response-deadline" scope="col">Termin składania ofert</th>
+                    <th id="view-field-product-category-table-column--JeXhqrdPPFw" class="views-field views-field-field-product-category" scope="col">Kategoria</th>
+                    <th id="view-title-table-column--uCoFxZq4BBM" class="views-field views-field-title" scope="col">Tytuł</th>
+                    <th id="view-changed-table-column--WVYFu_7Sj-Q" class="views-field views-field-changed" scope="col">Data aktualizacji</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td headers="view-field-start-date-table-column--Ow_Idxh3fSg" class="views-field views-field-field-start-date"><time datetime="2025-07-08T05:31:59Z" class="datetime">08/07/2025 - 07:31</time>
+                    </td>
+                    <td headers="view-field-response-deadline-table-column---zgRrhElrI4" class="views-field views-field-field-response-deadline"><time datetime="2025-07-28T12:00:00Z" class="datetime">28/07/2025 - 14:00</time>
+                    </td>
+                    <td headers="view-field-product-category-table-column--JeXhqrdPPFw" class="views-field views-field-field-product-category">          </td>
+                    <td headers="view-title-table-column--uCoFxZq4BBM" class="views-field views-field-title"><a href="/pl/postoj-hmg-ii-2026-komin-h-150-remont-przewodu-z-tws-konstrukcji-podestow-oraz-wymiana-drabin" hreflang="pl">Postój HMG II 2026 - Komin H-150 - Remont przewodu z TWS, konstrukcji, podestów oraz wymiana drabin</a>          </td>
+                    <td headers="view-changed-table-column--WVYFu_7Sj-Q" class="views-field views-field-changed"><time datetime="2025-07-08T07:50:01+02:00" class="datetime">08/07/2025 - 07:50</time>
+                    </td>
+                </tr>
+                <tr>
+                    <td headers="view-field-start-date-table-column--Ow_Idxh3fSg" class="views-field views-field-field-start-date"><time datetime="2025-07-11T11:55:29Z" class="datetime">11/07/2025 - 13:55</time>
+                    </td>
+                    <td headers="view-field-response-deadline-table-column---zgRrhElrI4" class="views-field views-field-field-response-deadline"><time datetime="2025-07-28T10:00:00Z" class="datetime">28/07/2025 - 12:00</time>
+                    </td>
+                    <td headers="view-field-product-category-table-column--JeXhqrdPPFw" class="views-field views-field-field-product-category">Asortyment BHP i odzież - dostawy          </td>
+                    <td headers="view-title-table-column--uCoFxZq4BBM" class="views-field views-field-title"><a href="/pl/rfpkghm-jrgh-p-pb-150-2025-zakup-aparatow-roboczych-powietrznych-air-boss-active-i-kamer" hreflang="pl">RFP_KGHM-JRGH-P-PB-150-2025 Zakup Aparatów roboczych powietrznych Air Boss Active i kamer termowizyjnych</a>          </td>
+                    <td headers="view-changed-table-column--WVYFu_7Sj-Q" class="views-field views-field-changed"><time datetime="2025-07-11T14:00:01+02:00" class="datetime">11/07/2025 - 14:00</time>
+                    </td>
+                </tr>
+                <tr>
+                    <td headers="view-field-start-date-table-column--Ow_Idxh3fSg" class="views-field views-field-field-start-date"><time datetime="2025-07-01T06:43:39Z" class="datetime">01/07/2025 - 08:43</time>
+                    </td>
+                    <td headers="view-field-response-deadline-table-column---zgRrhElrI4" class="views-field views-field-field-response-deadline"><time datetime="2025-07-28T10:00:00Z" class="datetime">28/07/2025 - 12:00</time>
+                    </td>
+                    <td headers="view-field-product-category-table-column--JeXhqrdPPFw" class="views-field views-field-field-product-category">          </td>
+                    <td headers="view-title-table-column--uCoFxZq4BBM" class="views-field views-field-title"><a href="/pl/25130-wykonanie-robot-w-branzy-budowlanej-i-technologicznej-w-ramach-zadania-pn-zabudowa-stanowisk" hreflang="pl">25130 - Wykonanie robót w branży budowlanej i technologicznej w ramach zadania pn. „Zabudowa stanowisk pompowych nr 1 i nr 4 na pompowni Damówka pompami typu 50B80 (zespół pompowy pompa z silnikiem i falownikiem)</a>          </td>
+                    <td headers="view-changed-table-column--WVYFu_7Sj-Q" class="views-field views-field-changed"><time datetime="2025-07-01T08:50:01+02:00" class="datetime">01/07/2025 - 08:50</time>
+                    </td>
+                </tr>
+                <tr>
+                    <td headers="view-field-start-date-table-column--Ow_Idxh3fSg" class="views-field views-field-field-start-date"><time datetime="2025-07-01T06:48:57Z" class="datetime">01/07/2025 - 08:48</time>
+                    </td>
+                    <td headers="view-field-response-deadline-table-column---zgRrhElrI4" class="views-field views-field-field-response-deadline"><time datetime="2025-07-28T10:00:00Z" class="datetime">28/07/2025 - 12:00</time>
+                    </td>
+                    <td headers="view-field-product-category-table-column--JeXhqrdPPFw" class="views-field views-field-field-product-category">          </td>
+                    <td headers="view-title-table-column--uCoFxZq4BBM" class="views-field views-field-title"><a href="/pl/25131-kompleksowe-wykonanie-robot-w-branzy-instalacyjnej-instalacja-wody-lodowej-oraz-kompleksowej" hreflang="pl"> 25131 - Kompleksowe wykonanie robót w branży instalacyjnej - instalacja wody lodowej oraz kompleksowej dostawy materiałów dla branży instalacyjnej wraz z nastawą, regulacją, uruchomieniem i szkoleniem pracowników U</a>          </td>
+                    <td headers="view-changed-table-column--WVYFu_7Sj-Q" class="views-field views-field-changed"><time datetime="2025-07-01T08:50:01+02:00" class="datetime">01/07/2025 - 08:50</time>
+                    </td>
+                </tr>
+                <tr>
+                    <td headers="view-field-start-date-table-column--Ow_Idxh3fSg" class="views-field views-field-field-start-date"><time datetime="2025-07-09T10:16:43Z" class="datetime">09/07/2025 - 12:16</time>
+                    </td>
+                    <td headers="view-field-response-deadline-table-column---zgRrhElrI4" class="views-field views-field-field-response-deadline"><time datetime="2025-07-28T10:00:00Z" class="datetime">28/07/2025 - 12:00</time>
+                    </td>
+                    <td headers="view-field-product-category-table-column--JeXhqrdPPFw" class="views-field views-field-field-product-category">Energetyka, obiekty elektroenergetyczne na powierzchni          </td>
+                    <td headers="view-title-table-column--uCoFxZq4BBM" class="views-field views-field-title"><a href="/pl/kghm-jgkl-p-mj-149-2025-wymiana-rozdzielni-powierzchniowych-6-kv-rfp" hreflang="pl"> KGHM-JGKL-P-MJ-149-2025 Wymiana rozdzielni powierzchniowych 6 kV-RFP</a>          </td>
+                    <td headers="view-changed-table-column--WVYFu_7Sj-Q" class="views-field views-field-changed"><time datetime="2025-07-09T12:20:01+02:00" class="datetime">09/07/2025 - 12:20</time>
+                    </td>
+                </tr>
+                <tr>
+                    <td headers="view-field-start-date-table-column--Ow_Idxh3fSg" class="views-field views-field-field-start-date"><time datetime="2025-07-10T06:16:44Z" class="datetime">10/07/2025 - 08:16</time>
+                    </td>
+                    <td headers="view-field-response-deadline-table-column---zgRrhElrI4" class="views-field views-field-field-response-deadline"><time datetime="2025-07-28T08:00:00Z" class="datetime">28/07/2025 - 10:00</time>
+                    </td>
+                    <td headers="view-field-product-category-table-column--JeXhqrdPPFw" class="views-field views-field-field-product-category">Roboty  montażowe          </td>
+                    <td headers="view-title-table-column--uCoFxZq4BBM" class="views-field views-field-title"><a href="/pl/rfp-kghm-jgkp-p-kk-144-2025-modernizacja-ukladu-sterowania-i-zasilania-urzadzen-komory-paliw-rejonu" hreflang="pl">RFP KGHM-JGKP-P-KK-144-2025 Modernizacja układu sterowania i zasilania urządzeń Komory Paliw rejonu GG-5 na dole kopalni przy szybie SW-1</a>          </td>
+                    <td headers="view-changed-table-column--WVYFu_7Sj-Q" class="views-field views-field-changed"><time datetime="2025-07-10T08:20:01+02:00" class="datetime">10/07/2025 - 08:20</time>
+                    </td>
+                </tr>
+                <tr>
+                    <td headers="view-field-start-date-table-column--Ow_Idxh3fSg" class="views-field views-field-field-start-date"><time datetime="2025-06-26T11:10:40Z" class="datetime">26/06/2025 - 13:10</time>
+                    </td>
+                    <td headers="view-field-response-deadline-table-column---zgRrhElrI4" class="views-field views-field-field-response-deadline"><time datetime="2025-07-27T22:00:00Z" class="datetime">28/07/2025 - 00:00</time>
+                    </td>
+                    <td headers="view-field-product-category-table-column--JeXhqrdPPFw" class="views-field views-field-field-product-category">          </td>
+                    <td headers="view-title-table-column--uCoFxZq4BBM" class="views-field views-field-title"><a href="/pl/rfp-wykonywanie-prob-parametrowych-pomp-przemyslowych" hreflang="pl">RFP - Wykonywanie prób parametrowych pomp przemysłowych</a>          </td>
+                    <td headers="view-changed-table-column--WVYFu_7Sj-Q" class="views-field views-field-changed"><time datetime="2025-06-26T13:20:01+02:00" class="datetime">26/06/2025 - 13:20</time>
+                    </td>
+                </tr>
+                <tr>
+                    <td headers="view-field-start-date-table-column--Ow_Idxh3fSg" class="views-field views-field-field-start-date"><time datetime="2025-07-10T12:58:00Z" class="datetime">10/07/2025 - 14:58</time>
+                    </td>
+                    <td headers="view-field-response-deadline-table-column---zgRrhElrI4" class="views-field views-field-field-response-deadline"><time datetime="2025-07-26T12:03:08Z" class="datetime">26/07/2025 - 14:03</time>
+                    </td>
+                    <td headers="view-field-product-category-table-column--JeXhqrdPPFw" class="views-field views-field-field-product-category">          </td>
+                    <td headers="view-title-table-column--uCoFxZq4BBM" class="views-field views-field-title"><a href="/pl/zanam-25151-roboty-budowlano-montazowe-dla-zadania-p-22-modernizacja-przenosnika-zgrzeblowego-606" hreflang="pl">ZANAM-UP-25151 Roboty budowlano-montażowe dla zadania P-22 Modernizacja przenośnika zgrzebłowego 606</a>          </td>
+                    <td headers="view-changed-table-column--WVYFu_7Sj-Q" class="views-field views-field-changed"><time datetime="2025-07-10T15:00:01+02:00" class="datetime">10/07/2025 - 15:00</time>
+                    </td>
+                </tr>
+                <tr>
+                    <td headers="view-field-start-date-table-column--Ow_Idxh3fSg" class="views-field views-field-field-start-date"><time datetime="2025-07-10T12:46:25Z" class="datetime">10/07/2025 - 14:46</time>
+                    </td>
+                    <td headers="view-field-response-deadline-table-column---zgRrhElrI4" class="views-field views-field-field-response-deadline"><time datetime="2025-07-26T12:02:29Z" class="datetime">26/07/2025 - 14:02</time>
+                    </td>
+                    <td headers="view-field-product-category-table-column--JeXhqrdPPFw" class="views-field views-field-field-product-category">          </td>
+                    <td headers="view-title-table-column--uCoFxZq4BBM" class="views-field views-field-title"><a href="/pl/zanam-25150-dostawy-w-ramach-zadania-p-22-modernizacja-przenosnika-zgrzeblowego-606" hreflang="pl">ZANAM-UP-25150 Dostawy w ramach zadania P-22 Modernizacja przenośnika zgrzebłowego 606</a>          </td>
+                    <td headers="view-changed-table-column--WVYFu_7Sj-Q" class="views-field views-field-changed"><time datetime="2025-07-10T14:50:02+02:00" class="datetime">10/07/2025 - 14:50</time>
+                    </td>
+                </tr>
+                <tr>
+                    <td headers="view-field-start-date-table-column--Ow_Idxh3fSg" class="views-field views-field-field-start-date"><time datetime="2025-07-11T10:05:06Z" class="datetime">11/07/2025 - 12:05</time>
+                    </td>
+                    <td headers="view-field-response-deadline-table-column---zgRrhElrI4" class="views-field views-field-field-response-deadline"><time datetime="2025-07-25T12:00:00Z" class="datetime">25/07/2025 - 14:00</time>
+                    </td>
+                    <td headers="view-field-product-category-table-column--JeXhqrdPPFw" class="views-field views-field-field-product-category">Usługi porządkowe i pralnicze          </td>
+                    <td headers="view-title-table-column--uCoFxZq4BBM" class="views-field views-field-title"><a href="/pl/jghg-so-2025-01-badania-wstepne-w-ramach-oceny-zanieczyszczenia-powierzchni-ziemi-na-terenach" hreflang="pl">JGHG-SO-2025-01 Badania wstępne w ramach oceny zanieczyszczenia powierzchni ziemi na terenach przynależnych do Huty Miedzi Głogów – obręb Wróblin Głogowski</a>          </td>
+                    <td headers="view-changed-table-column--WVYFu_7Sj-Q" class="views-field views-field-changed"><time datetime="2025-07-07T11:20:01+02:00" class="datetime">07/07/2025 - 11:20</time>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <nav class="pager" role="navigation" aria-labelledby="pagination-heading--hJ-E5pVYsto">
+        <h4 id="pagination-heading--hJ-E5pVYsto" class="visually-hidden">Stronicowanie</h4>
+        <ul class="pager__items js-pager__items">
+            <li class="pager__item pager__item--first">
+                <a href="?page=0" title="Przejdź do pierwszej strony">
+                    <span class="visually-hidden">Pierwsza strona</span>
+                    <span aria-hidden="true">« pierwsza</span>
+                </a>
+            </li>
+            <li class="pager__item pager__item--previous">
+                <a href="?page=0" title="Przejdź do poprzedniej strony" rel="prev">
+                    <span class="visually-hidden">Poprzednia strona</span>
+                    <span aria-hidden="true">‹ poprzednia</span>
+                </a>
+            </li>
+            <li class="pager__item">
+                <a href="?page=0" title="Go to page 1">
+                    <span class="visually-hidden">
+                        Page
+                    </span>1</a>
+            </li>
+            <li class="pager__item is-active">
+                <a href="?page=1" title="Bieżąca strona" aria-current="page">
+                    <span class="visually-hidden">
+                        Bieżąca strona
+                    </span>2</a>
+            </li>
+            <li class="pager__item">
+                <a href="?page=2" title="Go to page 3">
+                    <span class="visually-hidden">
+                        Page
+                    </span>3</a>
+            </li>
+            <li class="pager__item">
+                <a href="?page=3" title="Go to page 4">
+                    <span class="visually-hidden">
+                        Page
+                    </span>4</a>
+            </li>
+            <li class="pager__item">
+                <a href="?page=4" title="Go to page 5">
+                    <span class="visually-hidden">
+                        Page
+                    </span>5</a>
+            </li>
+            <li class="pager__item">
+                <a href="?page=5" title="Go to page 6">
+                    <span class="visually-hidden">
+                        Page
+                    </span>6</a>
+            </li>
+            <li class="pager__item">
+                <a href="?page=6" title="Go to page 7">
+                    <span class="visually-hidden">
+                        Page
+                    </span>7</a>
+            </li>
+            <li class="pager__item">
+                <a href="?page=7" title="Go to page 8">
+                    <span class="visually-hidden">
+                        Page
+                    </span>8</a>
+            </li>
+            <li class="pager__item">
+                <a href="?page=8" title="Go to page 9">
+                    <span class="visually-hidden">
+                        Page
+                    </span>9</a>
+            </li>
+            <li class="pager__item pager__item--ellipsis" role="presentation">&hellip;</li>
+            <li class="pager__item pager__item--next">
+                <a href="?page=2" title="Przejdź do następnej strony" rel="next">
+                    <span class="visually-hidden">Następna strona</span>
+                    <span aria-hidden="true">następna ›</span>
+                </a>
+            </li>
+            <li class="pager__item pager__item--last">
+                <a href="?page=9" title="Przejdź do ostatniej strony">
+                    <span class="visually-hidden">Ostatnia strona</span>
+                    <span aria-hidden="true">ostatnia »</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+</div>

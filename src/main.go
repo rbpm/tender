@@ -7,6 +7,7 @@ import (
 	"tender/bk_page"
 	"tender/dto"
 	"tender/interfaces/data"
+	"tender/kghm_page"
 	"tender/login_trade_page"
 	"tender/order_page"
 	"tender/orlen_page"
@@ -19,16 +20,36 @@ func main() {
 	flags := dto.NewFlagDTO()
 	mkDirIfNotExist(flags.ExcelDir)
 	common := make([]data.Data, 0)
-	common = append(common, processTenders(flags)...)
-	common = append(common, processOrders(flags)...)
-	common = append(common, processBK(flags)...)
-	common = append(common, processFrog(flags)...)
-	common = append(common, processAnimex(flags)...)
-	common = append(common, processBosbank(flags)...)
-	common = append(common, processGemetica(flags)...)
-	common = append(common, processPko(flags)...)
-	common = append(common, processOrlen(flags)...)
+	//common = append(common, processTenders(flags)...)
+	//common = append(common, processOrders(flags)...)
+	//common = append(common, processBK(flags)...)
+	//common = append(common, processFrog(flags)...)
+	//common = append(common, processAnimex(flags)...)
+	//common = append(common, processBosbank(flags)...)
+	//common = append(common, processGemetica(flags)...)
+	//common = append(common, processPko(flags)...)
+	//common = append(common, processOrlen(flags)...)
+	common = append(common, processKghm(flags)...)
 	processCommon(flags, common)
+}
+
+func processKghm(flags *dto.FlagDTO) []data.Data {
+	url := "https://kghm.com/pl/przetargi-nieograniczone"
+	return processKghmPage("kghm", url, flags, "kghm.xlsx")
+}
+
+func processKghmPage(client string, url string, flags *dto.FlagDTO, oldFileName string) []data.Data {
+	var err error
+	var done bool
+	fmt.Println(client + " login trade START ***")
+	tenders := make([]data.Data, 0)
+	tendersOldAll := make([]data.Data, 0)
+	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+oldFileName, client, tendersOldAll)
+	//flags.LoginTradePages 100
+	err, tenders = kghm_page.ProcessGetKghmPages(100, err, tenders, done, tendersOldAll)
+	process.ProcessSaveDataToExcel(client, err, tenders, tendersOldAll, flags)
+	fmt.Println(client + " login trade END ***")
+	return tenders
 }
 
 func processOrlen(flags *dto.FlagDTO) []data.Data {
