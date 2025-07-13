@@ -25,6 +25,8 @@ func ProcessGetPzPages(err error, client string, tenders []data.Data, done bool,
 }
 
 func ProcessGetPzPage(page int, client string, session *azuretls.Session, tenders []data.Data, tendersOldAll []data.Data) (error, []data.Data, bool) {
+	// 99999999 is set on page when selected "all"
+	// other 100
 	pageSize := 99999999
 	pageStart := page*pageSize - 1
 	requestData := `{
@@ -49,17 +51,13 @@ func ProcessGetPzPage(page int, client string, session *azuretls.Session, tender
 		"GD_pagestart": "%d"
     }`
 	requestData = fmt.Sprintf(requestData, pageSize, pageStart)
-	// fmt.Println(requestData)
+
 	req := &azuretls.Request{
 		Method: http.MethodPost,
 		Url:    "https://platformazakupowa.plk-sa.pl/app/demand/notice/public/current/list?USER_MENU_HOVER=currentNoticeList",
 		Body:   requestData,
 	}
 	response, err := session.Do(req)
-
-	//fmt.Println(response.String())
-
-	// <table id="publicList" class="mp_gridTable mp_gridable">
 
 	element, err := gosoup.ParseAsHTML(response.String())
 	tableElements := element.FindAll("table", gosoup.Attributes{"id": "publicList"})
@@ -89,6 +87,7 @@ func ProcessGetPzPage(page int, client string, session *azuretls.Session, tender
 		} else if len(tdElements) != expectedTdElementsSize {
 			fmt.Println("wrong number of td elements", len(tdElements))
 		} else {
+		    // <th>...</th>
 			// 0 Numer postępowania
 			// 1 Nazwa postępowania
 			// 2 Podstawa prawna
@@ -108,11 +107,8 @@ func ProcessGetPzPage(page int, client string, session *azuretls.Session, tender
 			const longForm = "2006-01-02 15:04"
 			dateTime, _ := time.Parse(longForm, offerDateTime)
 			offerDate := dateTime.Format("2006-01-02")
-
 			// createdDate := tdElements[11].FirstChild.Data
-
 			href := "https://platformazakupowa.plk-sa.pl/app/demand/notice/public/" + id + "/details"
-
 			tender := dto.NewDataDTO(client, title, href, offerDate, id)
 
 			tenders = append(tenders, tender)
