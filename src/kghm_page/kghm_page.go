@@ -93,16 +93,16 @@ func ProcessGetKghmPage(page int, session *azuretls.Session, tenders []data.Data
 			if len(tdElements) != expectedTdElementsSize {
 				fmt.Println("wrong number of td elements", len(tdElements))
 			} else {
-				//startTimeTdElement := tdElements[0]
-				//startTimeElement := startTimeTdElement.FindByTag("time")
-				//startValue, ok := startTimeElement.GetAttribute("datetime")
-				//if !ok {
-				//	fmt.Printf("[0]datetime attribute: does not exist")
-				//}
+				startTimeTdElement := tdElements[0]
+				startTimeElement := startTimeTdElement.FindByTag("time")
+				publiahedDateValue, ok := startTimeElement.GetAttribute("datetime")
+				if !ok {
+					fmt.Printf("[0]datetime attribute: does not exist")
+				}
 
 				endTimeTdElement := tdElements[1]
 				endTimeElement := endTimeTdElement.FindByTag("time")
-				endValue, ok := endTimeElement.GetAttribute("datetime")
+				offerDateValue, ok := endTimeElement.GetAttribute("datetime")
 				if !ok {
 					fmt.Printf("[1]datetime attribute: does not exist")
 				}
@@ -121,14 +121,16 @@ func ProcessGetKghmPage(page int, session *azuretls.Session, tenders []data.Data
 					fmt.Printf("href attribute: does not exist")
 				}
 
-				//updateTimeTdElement := tdElements[4]
-				//updateTimeElement := updateTimeTdElement.FindByTag("time")
-				//updateValue, ok := updateTimeElement.GetAttribute("datetime")
-				//if !ok {
-				//	fmt.Printf("[0]datetime attribute: does not exist")
-				//}
+				updateTimeTdElement := tdElements[4]
+				updateTimeElement := updateTimeTdElement.FindByTag("time")
+				updatedDateValue, ok := updateTimeElement.GetAttribute("datetime")
+				if !ok {
+					fmt.Printf("[0]datetime attribute: does not exist")
+				}
 
-				tender := dto.NewDataDTO("kghm", titleValue, "https://kghm.com/"+hrefValue, endValue, hrefValue)
+				_ = dto.NewKghmDTO("kghm", titleValue, "https://kghm.com/"+hrefValue, offerDateValue, publiahedDateValue, updatedDateValue, hrefValue)
+				tender := dto.NewDataDTO("kghm", titleValue, "https://kghm.com/"+hrefValue, offerDateValue, hrefValue)
+
 				tenders = append(tenders, tender)
 				if data.IsIn(tendersOldAll, tender) {
 					fmt.Println("processGetTenderPage: old tenders contains this", tender)

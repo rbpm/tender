@@ -1,5 +1,25 @@
 package dto
 
+import "tender/interfaces/data"
+
+type KghmDTO struct {
+	src           string
+	name          string
+	href          string
+	offerDate     string
+	publishedDate string
+	updatedDate   string
+	id            string
+	isIT          bool
+}
+
+func NewKghmDTO(src string, name string, href string, offerDate string,
+	publishedDate string, updatedDate string, id string) *KghmDTO {
+	p := KghmDTO{src: src, name: name, href: href, offerDate: offerDate,
+		publishedDate: publishedDate, updatedDate: updatedDate, id: id, isIT: data.IsIT(name)}
+	return &p
+}
+
 type KghmAjaxDTO struct {
 	Command  string `json:"command"`
 	Settings *struct {
