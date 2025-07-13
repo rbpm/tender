@@ -13,6 +13,7 @@ import (
 	"tender/orlen_page"
 	"tender/pko_page"
 	"tender/process"
+	"tender/pz_page"
 	"tender/tender_page"
 )
 
@@ -20,35 +21,49 @@ func main() {
 	flags := dto.NewFlagDTO()
 	mkDirIfNotExist(flags.ExcelDir)
 	common := make([]data.Data, 0)
-	//common = append(common, processTenders(flags)...)
-	//common = append(common, processOrders(flags)...)
-	//common = append(common, processBK(flags)...)
-	//common = append(common, processFrog(flags)...)
-	//common = append(common, processAnimex(flags)...)
-	//common = append(common, processBosbank(flags)...)
-	//common = append(common, processGemetica(flags)...)
-	//common = append(common, processPko(flags)...)
-	//common = append(common, processOrlen(flags)...)
+	common = append(common, processTenders(flags)...)
+	common = append(common, processOrders(flags)...)
+	common = append(common, processBK(flags)...)
+	common = append(common, processFrog(flags)...)
+	common = append(common, processAnimex(flags)...)
+	common = append(common, processBosbank(flags)...)
+	common = append(common, processGemetica(flags)...)
+	common = append(common, processPko(flags)...)
+	common = append(common, processOrlen(flags)...)
 	common = append(common, processKghm(flags)...)
+	common = append(common, processPz(flags)...)
 	processCommon(flags, common)
 }
 
-func processKghm(flags *dto.FlagDTO) []data.Data {
-	url := "https://kghm.com/pl/przetargi-nieograniczone"
-	return processKghmPage("kghm", url, flags, "kghm.xlsx")
-}
-
-func processKghmPage(client string, url string, flags *dto.FlagDTO, oldFileName string) []data.Data {
+func processPz(flags *dto.FlagDTO) []data.Data {
+	client := "platformazakupowa"
+	oldFileName := client + ".xlsx"
 	var err error
 	var done bool
-	fmt.Println(client + " login trade START ***")
+	fmt.Println("***", client, " START ************")
+	tenders := make([]data.Data, 0)
+	tendersOldAll := make([]data.Data, 0)
+	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+oldFileName, client, tendersOldAll)
+	//flags.LoginTradePages 100
+	err, tenders = pz_page.ProcessGetPzPages(err, client, tenders, done, tendersOldAll)
+	process.ProcessSaveDataToExcel(client, err, tenders, tendersOldAll, flags)
+	fmt.Println("***", client, " END ************")
+	return tenders
+}
+
+func processKghm(flags *dto.FlagDTO) []data.Data {
+	client := "kghm"
+	oldFileName := client + ".xlsx"
+	var err error
+	var done bool
+	fmt.Println("***", client, " START ************")
 	tenders := make([]data.Data, 0)
 	tendersOldAll := make([]data.Data, 0)
 	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+oldFileName, client, tendersOldAll)
 	//flags.LoginTradePages 100
 	err, tenders = kghm_page.ProcessGetKghmPages(100, err, tenders, done, tendersOldAll)
 	process.ProcessSaveDataToExcel(client, err, tenders, tendersOldAll, flags)
-	fmt.Println(client + " login trade END ***")
+	fmt.Println("***", client, " END ************")
 	return tenders
 }
 
