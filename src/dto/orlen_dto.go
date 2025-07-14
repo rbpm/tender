@@ -36,6 +36,5 @@ type OrlenOrgDTO struct {
 func (orlenDto OrlenDTO) GetDataDTO() *DataDTO {
 	href := "https://connect.orlen.pl/app/outRfx/" + fmt.Sprintf("%d", orlenDto.Identity) + "/supplier/status"
 	timeObj := time.UnixMilli(orlenDto.EndDate)
-	dateValue := timeObj.Format("2006-01-02")
-	return NewDataDTO("orlen", orlenDto.Name, href, dateValue, fmt.Sprintf("%v", orlenDto.Identity))
+	return NewDataDTO("orlen", orlenDto.Name, href, &timeObj, fmt.Sprintf("%v", orlenDto.Identity))
 }

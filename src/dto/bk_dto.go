@@ -2,8 +2,10 @@ package dto
 
 import (
 	"fmt"
-	"time"
+	"tender/tools"
 )
+
+const BK_TIME_LAYOUT = "2006-01-02 15:04:05"
 
 type BkDTO struct {
 	Status string         `json:"status"`
@@ -33,8 +35,6 @@ type BkDataDTO struct {
 
 func (bk BkDataDTO) GetDataDTO() *DataDTO {
 	href := "https://bazakonkurencyjnosci.funduszeeuropejskie.gov.pl/ogloszenia/" + fmt.Sprintf("%v", bk.Id)
-	const longForm = "2006-01-02 15:04:05"
-	dateTime, _ := time.Parse(longForm, bk.SubmissionDeadline)
-	dateValue := dateTime.Format("2006-01-02")
-	return NewDataDTO("bazakonkurencyjnosci", bk.Title+"\n"+bk.Content, href, dateValue, fmt.Sprintf("%v", bk.Id))
+	timePtr := tools.ParseDate(BK_TIME_LAYOUT, bk.SubmissionDeadline)
+	return NewDataDTO("bazakonkurencyjnosci", bk.Title+"\n"+bk.Content, href, timePtr, fmt.Sprintf("%v", bk.Id))
 }

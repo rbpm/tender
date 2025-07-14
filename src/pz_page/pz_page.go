@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"tender/dto"
 	"tender/interfaces/data"
-	"time"
+	"tender/tools"
 
 	"github.com/Noooste/azuretls-client"
 	"github.com/gurkankaymak/gosoup"
@@ -87,7 +87,7 @@ func ProcessGetPzPage(page int, client string, session *azuretls.Session, tender
 		} else if len(tdElements) != expectedTdElementsSize {
 			fmt.Println("wrong number of td elements", len(tdElements))
 		} else {
-		    // <th>...</th>
+			// <th>...</th>
 			// 0 Numer postępowania
 			// 1 Nazwa postępowania
 			// 2 Podstawa prawna
@@ -105,11 +105,10 @@ func ProcessGetPzPage(page int, client string, session *azuretls.Session, tender
 			// publishedDate := tdElements[6].FirstChild.Data
 			offerDateTime := tdElements[7].FirstChild.Data
 			const longForm = "2006-01-02 15:04"
-			dateTime, _ := time.Parse(longForm, offerDateTime)
-			offerDate := dateTime.Format("2006-01-02")
+			timePtr := tools.ParseDate(longForm, offerDateTime)
 			// createdDate := tdElements[11].FirstChild.Data
 			href := "https://platformazakupowa.plk-sa.pl/app/demand/notice/public/" + id + "/details"
-			tender := dto.NewDataDTO(client, title, href, offerDate, id)
+			tender := dto.NewDataDTO(client, title, href, timePtr, id)
 
 			tenders = append(tenders, tender)
 			if data.IsIn(tendersOldAll, tender) {

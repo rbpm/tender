@@ -1,8 +1,10 @@
 package dto
 
 import (
-	"time"
+	"tender/tools"
 )
+
+const LOGIN_TRADE_TIME_LAYOUT = "2006-01-02 15:04"
 
 type LoginTradeDTO struct {
 	Id        string
@@ -22,9 +24,7 @@ func NewLoginTradeDTO(url string, id string, titleName string, titleID string, h
 }
 
 func (loginTradeDto LoginTradeDTO) GetDataDTO(client string) *DataDTO {
-	const longForm = "2006-01-02 15:04"
-	dateTime, _ := time.Parse(longForm, loginTradeDto.EndDate)
-	dateValue := dateTime.Format("2006-01-02")
+	timePtr := tools.ParseDate(LOGIN_TRADE_TIME_LAYOUT, loginTradeDto.EndDate)
 	// loginTradeDto.ClientID?
-	return NewDataDTO(client, loginTradeDto.TitleName+"\n"+loginTradeDto.TitleID, loginTradeDto.Href, dateValue, loginTradeDto.Id)
+	return NewDataDTO(client, loginTradeDto.TitleName+"\n"+loginTradeDto.TitleID, loginTradeDto.Href, timePtr, loginTradeDto.Id)
 }

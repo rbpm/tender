@@ -2,8 +2,10 @@ package dto
 
 import (
 	"tender/interfaces/data"
-	"time"
+	"tender/tools"
 )
+
+const KGHM_TIME_LAYOUT = "2006-01-02T15:04:05Z"
 
 type KghmDTO struct {
 	Src           string
@@ -24,10 +26,8 @@ func NewKghmDTO(src string, name string, href string, offerDate string,
 }
 
 func (kghmDto KghmDTO) GetDataDTO() *DataDTO {
-	const longForm = "2006-01-02T15:04:05Z"
-	dateTime, _ := time.Parse(longForm, kghmDto.OfferDate)
-	dateValue := dateTime.Format("2006-01-02")
-	return NewDataDTO(kghmDto.Src, kghmDto.Name, kghmDto.Href, dateValue, kghmDto.Id)
+	timePtr := tools.ParseDate(KGHM_TIME_LAYOUT, kghmDto.OfferDate)
+	return NewDataDTO(kghmDto.Src, kghmDto.Name, kghmDto.Href, timePtr, kghmDto.Id)
 }
 
 type KghmAjaxDTO struct {

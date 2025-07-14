@@ -2,19 +2,20 @@ package dto
 
 import (
 	"tender/interfaces/data"
+	"time"
 )
 
 type DataDTO struct {
 	src  string
 	name string
 	href string
-	date string
+	time *time.Time
 	id   string
 	isIT bool
 }
 
-func NewDataDTO(src string, name string, href string, date string, id string) *DataDTO {
-	p := DataDTO{src: src, name: name, href: href, date: date, id: id, isIT: data.IsIT(name)}
+func NewDataDTO(src string, name string, href string, time *time.Time, id string) *DataDTO {
+	p := DataDTO{src: src, name: name, href: href, time: time, id: id, isIT: data.IsIT(name)}
 	return &p
 }
 
@@ -31,7 +32,10 @@ func (tender *DataDTO) Href() string {
 }
 
 func (tender *DataDTO) Date() string {
-	return tender.date
+	if tender.time == nil {
+		return ""
+	}
+	return tender.time.Format("2006-01-02")
 }
 
 func (tender *DataDTO) Id() string {
