@@ -3,10 +3,11 @@ package kghm_page
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Noooste/azuretls-client"
-	"github.com/gurkankaymak/gosoup"
 	"tender/dto"
 	"tender/interfaces/data"
+
+	"github.com/Noooste/azuretls-client"
+	"github.com/gurkankaymak/gosoup"
 )
 
 type GetHrefID func(string) string
@@ -128,9 +129,8 @@ func ProcessGetKghmPage(page int, session *azuretls.Session, tenders []data.Data
 					fmt.Printf("[0]datetime attribute: does not exist")
 				}
 
-				_ = dto.NewKghmDTO("kghm", titleValue, "https://kghm.com/"+hrefValue, offerDateValue, publiahedDateValue, updatedDateValue, hrefValue)
-				tender := dto.NewDataDTO("kghm", titleValue, "https://kghm.com/"+hrefValue, offerDateValue, hrefValue)
-
+				kghmDto := dto.NewKghmDTO("kghm", titleValue, "https://kghm.com/"+hrefValue, offerDateValue, publiahedDateValue, updatedDateValue, hrefValue)
+				tender := kghmDto.GetDataDTO()
 				tenders = append(tenders, tender)
 				if data.IsIn(tendersOldAll, tender) {
 					fmt.Println("processGetTenderPage: old tenders contains this", tender)

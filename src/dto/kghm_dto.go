@@ -1,23 +1,33 @@
 package dto
 
-import "tender/interfaces/data"
+import (
+	"tender/interfaces/data"
+	"time"
+)
 
 type KghmDTO struct {
-	src           string
-	name          string
-	href          string
-	offerDate     string
-	publishedDate string
-	updatedDate   string
-	id            string
-	isIT          bool
+	Src           string
+	Name          string
+	Href          string
+	OfferDate     string
+	PublishedDate string
+	UpdatedDate   string
+	Id            string
+	IsIT          bool
 }
 
 func NewKghmDTO(src string, name string, href string, offerDate string,
 	publishedDate string, updatedDate string, id string) *KghmDTO {
-	p := KghmDTO{src: src, name: name, href: href, offerDate: offerDate,
-		publishedDate: publishedDate, updatedDate: updatedDate, id: id, isIT: data.IsIT(name)}
+	p := KghmDTO{Src: src, Name: name, Href: href, OfferDate: offerDate,
+		PublishedDate: publishedDate, UpdatedDate: updatedDate, Id: id, IsIT: data.IsIT(name)}
 	return &p
+}
+
+func (kghmDto KghmDTO) GetDataDTO() *DataDTO {
+	const longForm = "2006-01-02T15:04:05Z"
+	dateTime, _ := time.Parse(longForm, kghmDto.OfferDate)
+	dateValue := dateTime.Format("2006-01-02")
+	return NewDataDTO(kghmDto.Src, kghmDto.Name, kghmDto.Href, dateValue, kghmDto.Id)
 }
 
 type KghmAjaxDTO struct {

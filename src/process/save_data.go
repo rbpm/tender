@@ -2,11 +2,15 @@ package process
 
 import (
 	"fmt"
-	"github.com/tealeg/xlsx/v3"
 	"tender/dto"
 	"tender/interfaces/data"
 	"time"
+
+	"github.com/tealeg/xlsx/v3"
 )
+
+const dateLayout = "2006-01-02"
+const numFmt = "yyyy-mm-dd"
 
 func ProcessSaveDataToExcel(filename string, err error, tenders, tendersOldAll []data.Data, flags *dto.FlagDTO) {
 	var fileAll *xlsx.File
@@ -53,6 +57,12 @@ func dateStr() string {
 	return time.Now().Format("2006-01-02")
 }
 
+func setCellDate(cell *xlsx.Cell, dateStr string, dateLayout string, numFmt string) {
+	dateTime, _ := time.Parse(dateLayout, dateStr)
+	cell.SetDate(dateTime)
+	cell.NumFmt = numFmt
+}
+
 func processSaveITDataToExcel(sheetName string, file *xlsx.File, tenders []data.Data) error {
 	sheetIT, err := file.AddSheet(sheetName)
 	setHeader(0, sheetIT)
@@ -95,7 +105,9 @@ func setRowData(startCell int, sheet *xlsx.Sheet, r int, tender data.Data) {
 	cell.Value = "WB"
 
 	cell, _ = sheet.Cell(r, nr+2)
-	cell.Value = dateStr()
+	//cell.Value = dateStr()
+
+	setCellDate(cell, dateStr(), dateLayout, numFmt)
 
 	cell, _ = sheet.Cell(r, nr+3)
 	cell.Value = tender.Src()
@@ -108,7 +120,8 @@ func setRowData(startCell int, sheet *xlsx.Sheet, r int, tender data.Data) {
 	cell.SetStyle(style)
 
 	cell, _ = sheet.Cell(r, nr+5)
-	cell.Value = tender.Date()
+	//cell.Value = tender.Date()
+	setCellDate(cell, tender.Date(), dateLayout, numFmt)
 
 }
 
