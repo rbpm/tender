@@ -1,7 +1,0 @@
-
-
-AJAX => zwraca komplet np 500 rekordow!!! Ale nie ma daty
- i to pokazuje na page/sort/itd
-
-GET	https://platformazakupowa.plk-sa.pl/app/category/list/json?canChoseParent=true
-GET	https://platformazakupowa.plk-sa.pl/app/category/list/json?canChoseParent=true&categoryIdentifier=CPV
