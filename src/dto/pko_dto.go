@@ -5,7 +5,7 @@ import (
 	"tender/tools"
 )
 
-const PKO_TIME_LAYOUT = "Termin nadsyłania ofert upływa w dniu 2006-01-02 roku, o godzinie 15:04."
+const PKO_TIME_LAYOUT = "02.01.2006 15:04"
 
 type PkoDTO struct {
 	Count    int            `json:"count"`
@@ -47,6 +47,9 @@ type PkoFiltersDTO struct {
 
 func (pkoResultDto PkoResultDTO) GetDataDTO() *DataDTO {
 	href := "https://www.pkobp.pl" + pkoResultDto.Path
-	timePtr := tools.ParseDate(PKO_TIME_LAYOUT, pkoResultDto.Snippet.Lead)
+	//"Termin nadsyłania ofert upływa w dniu 02.01.2006 roku, o godzinie 15:04."
+	str := pkoResultDto.Snippet.Lead[40 : len(pkoResultDto.Snippet.Lead)-1]
+	str = str[:10] + str[27:]
+	timePtr := tools.ParseDate(PKO_TIME_LAYOUT, str)
 	return NewDataDTO("pko", pkoResultDto.Snippet.Title.Text, href, timePtr, fmt.Sprintf("%v", pkoResultDto.Id))
 }
