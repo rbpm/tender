@@ -11,11 +11,11 @@ import (
 	"github.com/gurkankaymak/gosoup"
 )
 
-func ProcessGetPzPages(err error, client string, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
+func ProcessGetPkpPages(err error, client string, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
 	session := azuretls.NewSession()
 	for page := 1; page <= 1; page++ {
-		fmt.Println("kghm page: ", page)
-		err, tenders, done = ProcessGetPzPage(page, client, session, tenders, tendersOldAll)
+		fmt.Println("pkp page: ", page)
+		err, tenders, done = ProcessGetPkpPage(page, client, session, tenders, tendersOldAll)
 		if done {
 			fmt.Println("done")
 			break
@@ -24,7 +24,7 @@ func ProcessGetPzPages(err error, client string, tenders []data.Data, done bool,
 	return err, tenders
 }
 
-func ProcessGetPzPage(page int, client string, session *azuretls.Session, tenders []data.Data, tendersOldAll []data.Data) (error, []data.Data, bool) {
+func ProcessGetPkpPage(page int, client string, session *azuretls.Session, tenders []data.Data, tendersOldAll []data.Data) (error, []data.Data, bool) {
 	// 99999999 is set on page when selected "all"
 	// other 100
 	pageSize := 99999999
@@ -112,7 +112,7 @@ func ProcessGetPzPage(page int, client string, session *azuretls.Session, tender
 
 			tenders = append(tenders, tender)
 			if data.IsIn(tendersOldAll, tender) {
-				fmt.Println("processGetPzPage: old pz contains this", tender)
+				fmt.Println("processGetPzPage: old pkp contains this", tender)
 				return err, tenders, true
 			}
 		}

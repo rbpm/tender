@@ -31,12 +31,12 @@ func main() {
 	common = append(common, processPko(flags)...)
 	common = append(common, processOrlen(flags)...)
 	common = append(common, processKghm(flags)...)
-	common = append(common, processPz(flags)...)
+	common = append(common, processPkp(flags)...)
 	processCommon(flags, common)
 }
 
-func processPz(flags *dto.FlagDTO) []data.Data {
-	client := "platformazakupowa"
+func processPkp(flags *dto.FlagDTO) []data.Data {
+	client := "pkp"
 	oldFileName := client + ".xlsx"
 	var err error
 	var done bool
@@ -45,7 +45,7 @@ func processPz(flags *dto.FlagDTO) []data.Data {
 	tendersOldAll := make([]data.Data, 0)
 	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+oldFileName, client, tendersOldAll)
 	//flags.LoginTradePages 100
-	err, tenders = pz_page.ProcessGetPzPages(err, client, tenders, done, tendersOldAll)
+	err, tenders = pz_page.ProcessGetPkpPages(err, client, tenders, done, tendersOldAll)
 	process.ProcessSaveDataToExcel(client, err, tenders, tendersOldAll, flags)
 	fmt.Println("***", client, " END ************")
 	return tenders
