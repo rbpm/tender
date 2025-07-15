@@ -6,23 +6,23 @@ import (
 	"os"
 	"tender/bk_page"
 	"tender/dto"
+	"tender/ezamowienia_page"
 	"tender/interfaces/data"
 	"tender/kghm_page"
 	"tender/login_trade_page"
-	"tender/order_page"
+	"tender/oneplace_page"
 	"tender/orlen_page"
 	"tender/pko_page"
 	"tender/process"
 	"tender/pz_page"
-	"tender/tender_page"
 )
 
 func main() {
 	flags := dto.NewFlagDTO()
 	mkDirIfNotExist(flags.ExcelDir)
 	common := make([]data.Data, 0)
-	common = append(common, processTenders(flags)...)
-	common = append(common, processOrders(flags)...)
+	common = append(common, processOneplace(flags)...)
+	common = append(common, processEzamowienia(flags)...)
 	common = append(common, processBK(flags)...)
 	common = append(common, processFrog(flags)...)
 	common = append(common, processAnimex(flags)...)
@@ -40,7 +40,7 @@ func processPz(flags *dto.FlagDTO) []data.Data {
 	oldFileName := client + ".xlsx"
 	var err error
 	var done bool
-	fmt.Println("***", client, " START ************")
+	fmt.Println("\n***", client, " START ************")
 	tenders := make([]data.Data, 0)
 	tendersOldAll := make([]data.Data, 0)
 	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+oldFileName, client, tendersOldAll)
@@ -56,7 +56,7 @@ func processKghm(flags *dto.FlagDTO) []data.Data {
 	oldFileName := client + ".xlsx"
 	var err error
 	var done bool
-	fmt.Println("***", client, " START ************")
+	fmt.Println("\n***", client, " START ************")
 	tenders := make([]data.Data, 0)
 	tendersOldAll := make([]data.Data, 0)
 	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+oldFileName, client, tendersOldAll)
@@ -70,7 +70,7 @@ func processKghm(flags *dto.FlagDTO) []data.Data {
 func processOrlen(flags *dto.FlagDTO) []data.Data {
 	var err error
 	var done bool
-	fmt.Println("orlen START")
+	fmt.Println("\norlen START")
 	tenders := make([]data.Data, 0)
 	tendersOldAll := make([]data.Data, 0)
 	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+flags.OrlenOldFileName, "orlen", tendersOldAll)
@@ -83,7 +83,7 @@ func processOrlen(flags *dto.FlagDTO) []data.Data {
 func processPko(flags *dto.FlagDTO) []data.Data {
 	var err error
 	var done bool
-	fmt.Println("pko START")
+	fmt.Println("\npko START")
 	tenders := make([]data.Data, 0)
 	tendersOldAll := make([]data.Data, 0)
 	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+flags.PkoOldFileName, "pko", tendersOldAll)
@@ -122,13 +122,13 @@ func processAnimex(flags *dto.FlagDTO) []data.Data {
 
 func processFrog(flags *dto.FlagDTO) []data.Data {
 	url := "https://zabka.logintrade.net/"
-	return processLoginTrade("frog", url, flags, "frog.xlsx")
+	return processLoginTrade("zabka", url, flags, "zabka.xlsx")
 }
 
 func processLoginTrade(client string, url string, flags *dto.FlagDTO, oldFileName string) []data.Data {
 	var err error
 	var done bool
-	fmt.Println(client + " login trade START ***")
+	fmt.Println("\n" + client + " login trade START ***")
 	tenders := make([]data.Data, 0)
 	tendersOldAll := make([]data.Data, 0)
 	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+oldFileName, client, tendersOldAll)
@@ -143,7 +143,7 @@ func processLoginTrade(client string, url string, flags *dto.FlagDTO, oldFileNam
 func processBK(flags *dto.FlagDTO) []data.Data {
 	var err error
 	var done bool
-	fmt.Println("bks START")
+	fmt.Println("\nbks START")
 	tenders := make([]data.Data, 0)
 	tendersOldAll := make([]data.Data, 0)
 	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+flags.BkOldFileName, "bk", tendersOldAll)
@@ -153,35 +153,35 @@ func processBK(flags *dto.FlagDTO) []data.Data {
 	return tenders
 }
 
-func processOrders(flags *dto.FlagDTO) []data.Data {
+func processEzamowienia(flags *dto.FlagDTO) []data.Data {
 	var err error
 	var done bool
-	fmt.Println("orders START")
+	fmt.Println("\nezamowienia START")
 	tenders := make([]data.Data, 0)
 	tendersOldAll := make([]data.Data, 0)
-	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+flags.OrdersOldFileName, "oferty", tendersOldAll)
-	err, tenders = order_page.ProcessGetOrderPages(flags, err, tenders, done, tendersOldAll)
-	process.ProcessSaveDataToExcel("oferty", err, tenders, tendersOldAll, flags)
-	fmt.Println("orders END")
+	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+flags.OrdersOldFileName, "ezamowienia", tendersOldAll)
+	err, tenders = ezamowienia_page.ProcessGetEzamowieniaPages(flags, err, tenders, done, tendersOldAll)
+	process.ProcessSaveDataToExcel("ezamowienia", err, tenders, tendersOldAll, flags)
+	fmt.Println("ezamowienia END")
 	return tenders
 }
 
-func processTenders(flags *dto.FlagDTO) []data.Data {
+func processOneplace(flags *dto.FlagDTO) []data.Data {
 	var err error
 	var done bool
-	fmt.Println("tenders START")
+	fmt.Println("\noneplace START")
 	tenders := make([]data.Data, 0)
 	tendersOldAll := make([]data.Data, 0)
-	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+flags.TenderOldFileName, "przetargi", tendersOldAll)
-	err, tenders = tender_page.ProcessGetTenderPages(flags, err, tenders, done, tendersOldAll)
-	process.ProcessSaveDataToExcel("przetargi", err, tenders, tendersOldAll, flags)
-	fmt.Println("tenders END")
+	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+flags.TenderOldFileName, "oneplace", tendersOldAll)
+	err, tenders = oneplace_page.ProcessGetOneplacePages(flags, err, tenders, done, tendersOldAll)
+	process.ProcessSaveDataToExcel("oneplace", err, tenders, tendersOldAll, flags)
+	fmt.Println("oneplace END")
 	return tenders
 }
 
 func processCommon(flags *dto.FlagDTO, common []data.Data) {
 	var err error
-	fmt.Println("common START")
+	fmt.Println("\ncommon START")
 	tendersOldAll := make([]data.Data, 0)
 	process.ProcessSaveDataToExcel("common", err, common, tendersOldAll, flags)
 	fmt.Println("common END")
