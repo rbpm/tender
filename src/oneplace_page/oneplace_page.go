@@ -32,7 +32,8 @@ func ProcessGetOneplacePage(page int, session *azuretls.Session, tenders []data.
 	//only this form is on www for page n: https://oneplace.marketplanet.pl/zapytania-ofertowe-przetargi/-/rfp/cat?_7_WAR_organizationnoticeportlet_cur=1
 	response, err := session.Get("https://oneplace.marketplanet.pl/zapytania-ofertowe-przetargi/-/rfp/cat?_7_WAR_organizationnoticeportlet_cur=" + pageStr)
 	if err != nil {
-		panic(err)
+		println(err.Error())
+		return err, tenders, true
 	}
 
 	element, err := gosoup.ParseAsHTML(response.String())

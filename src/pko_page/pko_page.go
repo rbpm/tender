@@ -3,9 +3,10 @@ package pko_page
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Noooste/azuretls-client"
 	"tender/dto"
 	"tender/interfaces/data"
+
+	"github.com/Noooste/azuretls-client"
 )
 
 func ProcessGetPkoPages(flags *dto.FlagDTO, err error, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
@@ -26,7 +27,8 @@ func ProcessGetPkoPage(page int, session *azuretls.Session, tenders []data.Data,
 	pageStr := fmt.Sprintf("%d", page)
 	response, err := session.Get("https://www.pkobp.pl/api/news/items?page=" + pageStr + "&page_size=8&page_id=649&categories=8&variant=contents")
 	if err != nil {
-		panic(err)
+		println(err.Error())
+		return err, tenders, true
 	}
 	err = json.Unmarshal([]byte(response.String()), &pkoDto)
 	if err != nil {

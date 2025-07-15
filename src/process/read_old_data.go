@@ -1,7 +1,6 @@
 package process
 
 import (
-	"errors"
 	"fmt"
 	"tender/dto"
 	"tender/interfaces/data"
@@ -25,13 +24,15 @@ func ReadOldAllFile(fileName string, sheetName string, tendersOldAll []data.Data
 func readOldAll(sheetName string, fileOldAll *xlsx.File, tendersOldAll []data.Data) []data.Data {
 	sheet, ok := fileOldAll.Sheet[sheetName]
 	if !ok {
-		panic(errors.New("sheet " + sheetName + " not found"))
+		println("sheet " + sheetName + " not found")
+		return tendersOldAll
 	}
 	fmt.Println("Max row is", sheet.MaxRow)
 	for row := 1; row < sheet.MaxRow; row++ {
 		r, err := sheet.Row(row)
 		if err != nil {
-			panic(err)
+			println(err.Error())
+			return tendersOldAll
 		}
 		tendersOldAll = oldAllRowVisitor(r, tendersOldAll)
 	}

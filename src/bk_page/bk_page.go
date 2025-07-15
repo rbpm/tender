@@ -3,9 +3,10 @@ package bk_page
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Noooste/azuretls-client"
 	"tender/dto"
 	"tender/interfaces/data"
+
+	"github.com/Noooste/azuretls-client"
 )
 
 func ProcessGetBkPages(flags *dto.FlagDTO, err error, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
@@ -34,7 +35,7 @@ func processGetBkTotal(session *azuretls.Session) (error, int) {
 	var bks dto.BkDTO
 	response, err := session.Get("https://bazakonkurencyjnosci.funduszeeuropejskie.gov.pl/api/announcements/search?page=1&limit=20&sort=publicationDate&status%5B0%5D=PUBLISHED")
 	if err != nil {
-		panic(err)
+		return err, 0
 	}
 	err = json.Unmarshal([]byte(response.String()), &bks)
 	if err != nil {
@@ -52,13 +53,14 @@ func processGetBkPage(limit int, session *azuretls.Session, tenders []data.Data,
 	limitStr := fmt.Sprintf("%d", limit)
 	response, err := session.Get("https://bazakonkurencyjnosci.funduszeeuropejskie.gov.pl/api/announcements/search?page=1&limit=" + limitStr + "&sort=publicationDate&status%5B0%5D=PUBLISHED")
 	if err != nil {
-		panic(err)
+		println(err.Error())
+		return err, tenders, true
 	}
 	err = json.Unmarshal([]byte(response.String()), &bks)
 	if err != nil {
 		println(err.Error())
 		println("response:" + response.String())
-		return err, nil, false
+		return err, tenders, true
 	}
 	total := bks.Data.Meta.Total
 	fmt.Println("BK total:", total, " for limit:", limit)

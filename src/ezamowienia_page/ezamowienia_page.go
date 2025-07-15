@@ -27,7 +27,8 @@ func ProcessGetEzamowieniaPage(page int, session *azuretls.Session, tenders []da
 	pageStr := fmt.Sprintf("%d", page)
 	response, err := session.Get("https://ezamowienia.gov.pl/mp-readmodels/api/Search/SearchTenders?SortingColumnName=InitiationDate&SortingDirection=DESC&PageNumber=" + pageStr + "&PageSize=50")
 	if err != nil {
-		panic(err)
+		println(err.Error())
+		return err, tenders, true
 	}
 	err = json.Unmarshal([]byte(response.String()), &orders)
 	if err != nil {

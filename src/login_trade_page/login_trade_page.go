@@ -2,10 +2,11 @@ package login_trade_page
 
 import (
 	"fmt"
-	"github.com/Noooste/azuretls-client"
-	"github.com/gurkankaymak/gosoup"
 	"tender/dto"
 	"tender/interfaces/data"
+
+	"github.com/Noooste/azuretls-client"
+	"github.com/gurkankaymak/gosoup"
 )
 
 const DEFAULT_URL_PREFIX = "portal,listaZapytaniaOfertowe.html?status_realizacji_zapytania[]=oczekiwanie_ofert&wojewodztwo=wszystkie&search=&search_sort=9&page="
@@ -41,7 +42,8 @@ func ProcessGetLoginTradePage(client string, url string, getHrefID GetHrefID, ur
 	fmt.Println(getUrl)
 	response, err := session.Get(getUrl)
 	if err != nil {
-		panic(err)
+		println(err.Error())
+		return err, tenders, true
 	}
 
 	element, err := gosoup.ParseAsHTML(response.String())
