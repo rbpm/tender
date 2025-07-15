@@ -1,4 +1,4 @@
-package pz_page
+package pkp_page
 
 import (
 	"fmt"

@@ -13,8 +13,8 @@ import (
 	"tender/oneplace_page"
 	"tender/orlen_page"
 	"tender/pko_page"
+	"tender/pkp_page"
 	"tender/process"
-	"tender/pz_page"
 )
 
 func main() {
@@ -45,7 +45,7 @@ func processPkp(flags *dto.FlagDTO) []data.Data {
 	tendersOldAll := make([]data.Data, 0)
 	err, tendersOldAll = process.ReadOldAllFile(flags.ExcelDir+oldFileName, client, tendersOldAll)
 	//flags.LoginTradePages 100
-	err, tenders = pz_page.ProcessGetPkpPages(err, client, tenders, done, tendersOldAll)
+	err, tenders = pkp_page.ProcessGetPkpPages(err, client, tenders, done, tendersOldAll)
 	process.ProcessSaveDataToExcel(client, err, tenders, tendersOldAll, flags)
 	fmt.Println("***", client, " END ************")
 	return tenders
