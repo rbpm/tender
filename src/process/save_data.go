@@ -10,7 +10,10 @@ import (
 )
 
 const dateLayout = "2006-01-02"
-const numFmt = "yyyy-mm-dd"
+const dateNumFmt = "yyyy-mm-dd"
+
+const timeLayout = "2006-01-02 15:04"
+const timeNumFmt = "yyyy-mm-dd hh:mm"
 
 func ProcessSaveDataToExcel(filename string, err error, tenders, tendersOldAll []data.Data, flags *dto.FlagDTO) {
 	var fileAll *xlsx.File
@@ -85,13 +88,17 @@ func processSaveAllToExcel(sheetName string, tenders []data.Data, file *xlsx.Fil
 	rowOther := 0
 	for _, tender := range tenders {
 		rowOther++
-		setRowData(2, sheet, rowOther, tender)
+		setRowData(3, sheet, rowOther, tender)
 		if tender.IsIT() {
 			cell, _ := sheet.Cell(rowOther, 0)
 			cell.Value = "IT"
 		}
 		cell, _ := sheet.Cell(rowOther, 1)
 		cell.Value = tender.Id()
+
+		cell, _ = sheet.Cell(rowOther, 2)
+		//cell.Value = tender.Time()
+		setCellDate(cell, tender.Time(), timeLayout, timeNumFmt)
 	}
 	return err
 }
@@ -107,7 +114,7 @@ func setRowData(startCell int, sheet *xlsx.Sheet, r int, tender data.Data) {
 	cell, _ = sheet.Cell(r, nr+2)
 	//cell.Value = dateStr()
 
-	setCellDate(cell, dateStr(), dateLayout, numFmt)
+	setCellDate(cell, dateStr(), dateLayout, dateNumFmt)
 
 	cell, _ = sheet.Cell(r, nr+3)
 	cell.Value = tender.Src()
@@ -121,7 +128,7 @@ func setRowData(startCell int, sheet *xlsx.Sheet, r int, tender data.Data) {
 
 	cell, _ = sheet.Cell(r, nr+5)
 	//cell.Value = tender.Date()
-	setCellDate(cell, tender.Date(), dateLayout, numFmt)
+	setCellDate(cell, tender.Date(), dateLayout, dateNumFmt)
 
 }
 
@@ -139,7 +146,7 @@ func setHeader(startCell int, sheet *xlsx.Sheet) {
 	nr++
 	cell, _ = sheet.Cell(0, nr)
 	cell.Value = "Data dodania"
-	sheet.SetColWidth(nr+1, nr+1, 25)
+	sheet.SetColWidth(nr+1, nr+1, 15)
 
 	nr++
 	cell, _ = sheet.Cell(0, nr)
@@ -158,11 +165,16 @@ func setHeader(startCell int, sheet *xlsx.Sheet) {
 }
 
 func setAllHeader(sheet *xlsx.Sheet) {
-	setHeader(2, sheet)
+	setHeader(3, sheet)
 	cell, _ := sheet.Cell(0, 0)
 	cell.Value = "IT"
 	sheet.SetColWidth(1, 1, 3)
+
 	cell, _ = sheet.Cell(0, 1)
 	cell.Value = "ID"
 	sheet.SetColWidth(2, 2, 40)
+
+	cell, _ = sheet.Cell(0, 2)
+	cell.Value = "time"
+	sheet.SetColWidth(3, 3, 20)
 }

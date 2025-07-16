@@ -44,19 +44,26 @@ func oldAllRowVisitor(r *xlsx.Row, tendersOldAll []data.Data) []data.Data {
 	idCell := r.GetCell(nr)
 	idValue := idCell.Value
 
-	nameCell := r.GetCell(nr + 1)
+	nameCell := r.GetCell(nr + 2)
 	nameValue := nameCell.Value
 
-	srcCell := r.GetCell(nr + 4)
+	srcCell := r.GetCell(nr + 5)
 	srcValue := srcCell.Value
 
-	hrefCell := r.GetCell(nr + 5)
+	hrefCell := r.GetCell(nr + 6)
 	hrefValue := hrefCell.Value
 
-	dateCell := r.GetCell(nr + 6)
+	// dateCell := r.GetCell(nr + 7)
+	dateCell := r.GetCell(nr + 1)
 	datePtr := getCellTime(dateCell)
 
 	tender := dto.NewDataDTO(srcValue, nameValue, hrefValue, datePtr, idValue)
+	// fmt.Println(tender.Src())
+	// fmt.Println(tender.Name())
+	// fmt.Println(tender.Href())
+	// fmt.Println(tender.Date())
+	// fmt.Println(tender.Time())
+	// fmt.Println(tender.Id())
 	tendersOldAll = append(tendersOldAll, tender)
 	return tendersOldAll
 }

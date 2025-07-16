@@ -38,6 +38,13 @@ func (tender *DataDTO) Date() string {
 	return tender.time.Format("2006-01-02")
 }
 
+func (tender *DataDTO) Time() string {
+	if tender.time == nil {
+		return ""
+	}
+	return tender.time.Format("2006-01-02 15:04")
+}
+
 func (tender *DataDTO) Id() string {
 	return tender.id
 }
