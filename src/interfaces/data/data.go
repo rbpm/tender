@@ -11,9 +11,10 @@ type Data interface {
 	IsIT() bool
 }
 
+// id can be different in the same name and date
 func IsIn(tenders []Data, tender Data) bool {
 	for _, p := range tenders {
-		if p.Id() == tender.Id() && p.Name() == tender.Name() {
+		if p.Date() == tender.Date() && p.Name() == tender.Name() {
 			return true
 		}
 	}
@@ -21,7 +22,6 @@ func IsIn(tenders []Data, tender Data) bool {
 }
 
 // "sztucznej inteligencji" - is too much and complicated
-
 func IsIT(name string) bool {
 	lowerName := strings.ToLower(name)
 	return strings.Contains(lowerName, "oprogramowani") ||
