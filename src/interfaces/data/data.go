@@ -19,10 +19,10 @@ func IsIn(tenders []Data, tender Data) bool {
 	for _, p := range tenders {
 		if p.Date() == tender.Date() && p.Name() == tender.Name() {
 			// oneplace... server gives different hour:min
-			// if p.Time() != tender.Time() {
-			// 	println("TODO:", p.Time())
-			// 	println("TODO:", tender.Time())
-			// }
+			if p.Time() != tender.Time() {
+				println("TODO:", p.Time())
+				println("TODO:", tender.Time())
+			}
 			return true
 		}
 	}
