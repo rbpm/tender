@@ -35,5 +35,7 @@ func IsIT(name string) bool {
 	return strings.Contains(lowerName, "oprogramowani") ||
 		strings.Contains(lowerName, " it ") ||
 		strings.Contains(lowerName, "rozwój i utrzymanie systemu") ||
-		(strings.Contains(lowerName, "aplikacj") && !strings.Contains(lowerName, "folii"))
+		(strings.Contains(lowerName, "aplikacj") && !strings.Contains(lowerName, "folii") ||
+			strings.Contains(lowerName, "software engineer") ||
+			strings.Contains(lowerName, "programist"))
 }
