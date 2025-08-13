@@ -17,7 +17,7 @@ type Data interface {
 // id can be different in the same name and date
 func IsIn(tenders []Data, tender Data) bool {
 	for _, p := range tenders {
-		if p.Date() == tender.Date() && p.Name() == tender.Name() {
+		if p.Date() == tender.Date() && cleanSpace(p.Name()) == cleanSpace(tender.Name()) {
 			// oneplace... server gives different hour:min
 			if p.Time() != tender.Time() {
 				println("TODO:", p.Time())
@@ -29,6 +29,10 @@ func IsIn(tenders []Data, tender Data) bool {
 	return false
 }
 
+func cleanSpace(str string) string {
+	return strings.Replace(str, "  ", " ", -1)
+}
+
 // "sztucznej inteligencji" - is too much and complicated
 func IsIT(name string) bool {
 	lowerName := strings.ToLower(name)
@@ -36,6 +40,6 @@ func IsIT(name string) bool {
 		strings.Contains(lowerName, " it ") ||
 		strings.Contains(lowerName, "rozwój i utrzymanie systemu") ||
 		(strings.Contains(lowerName, "aplikacj") && !strings.Contains(lowerName, "folii") ||
-			strings.Contains(lowerName, "software engineer") ||
+			strings.Contains(lowerName, "software") || //" engineer"
 			strings.Contains(lowerName, "programist"))
 }
