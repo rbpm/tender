@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"tender/dto"
 	"tender/interfaces/data"
+	"time"
 
 	"github.com/Noooste/azuretls-client"
 	"github.com/gurkankaymak/gosoup"
@@ -22,6 +23,7 @@ func GetDefaultHrefID(value string) string {
 
 func ProcessGetKghmPages(pages int, err error, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
 	session := azuretls.NewSession()
+	session.SetTimeout(5 * time.Minute)
 	for page := 1; page <= pages; page++ {
 		fmt.Println("kghm page: ", page)
 		err, tenders, done = ProcessGetKghmPage(page, session, tenders, tendersOldAll)

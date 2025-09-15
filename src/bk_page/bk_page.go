@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"tender/dto"
 	"tender/interfaces/data"
+	"time"
 
 	"github.com/Noooste/azuretls-client"
 )
 
 func ProcessGetBkPages(flags *dto.FlagDTO, err error, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
 	session := azuretls.NewSession()
+	session.SetTimeout(5 * time.Minute)
 	if flags.BkPages > 0 {
 		for page := 1; page <= flags.BkPages; page++ {
 			fmt.Println("bk page: ", page)

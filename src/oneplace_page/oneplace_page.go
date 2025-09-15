@@ -6,6 +6,7 @@ import (
 	"tender/dto"
 	"tender/interfaces/data"
 	"tender/tools"
+	"time"
 
 	"github.com/Noooste/azuretls-client"
 	"github.com/gurkankaymak/gosoup"
@@ -13,6 +14,7 @@ import (
 
 func ProcessGetOneplacePages(flags *dto.FlagDTO, err error, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
 	session := azuretls.NewSession()
+	session.SetTimeout(5 * time.Minute)
 	for page := 1; page <= flags.OneplacePages; page++ {
 		fmt.Println("oneplace page: ", page)
 		err, tenders, done = ProcessGetOneplacePage(page, session, tenders, tendersOldAll)

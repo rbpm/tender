@@ -6,6 +6,7 @@ import (
 	"tender/dto"
 	"tender/interfaces/data"
 	"tender/tools"
+	"time"
 
 	"github.com/Noooste/azuretls-client"
 	"github.com/gurkankaymak/gosoup"
@@ -13,6 +14,7 @@ import (
 
 func ProcessGetPkpPages(err error, client string, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
 	session := azuretls.NewSession()
+	session.SetTimeout(5 * time.Minute)
 	for page := 1; page <= 1; page++ {
 		fmt.Println("pkp page: ", page)
 		err, tenders, done = ProcessGetPkpPage(page, client, session, tenders, tendersOldAll)

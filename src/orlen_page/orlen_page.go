@@ -3,15 +3,18 @@ package orlen_page
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Noooste/azuretls-client"
 	"net/http"
 	"strconv"
 	"tender/dto"
 	"tender/interfaces/data"
+	"time"
+
+	"github.com/Noooste/azuretls-client"
 )
 
 func ProcessGetOrlenPages(flags *dto.FlagDTO, err error, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
 	session := azuretls.NewSession()
+	session.SetTimeout(5 * time.Minute)
 	for page := 1; page <= flags.OrlenPages; page++ {
 		fmt.Println("orlen page: ", page)
 		err, tenders, done = ProcessGetOrlenPage(page, session, tenders, tendersOldAll)

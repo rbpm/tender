@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"tender/dto"
 	"tender/interfaces/data"
+	"time"
 
 	"github.com/Noooste/azuretls-client"
 )
 
 func ProcessGetEzamowieniaPages(flags *dto.FlagDTO, err error, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
 	session := azuretls.NewSession()
+	session.SetTimeout(5 * time.Minute)
 	for page := 1; page <= flags.EzamowieniaPages; page++ {
 		fmt.Println("order page: ", page)
 		err, tenders, done = ProcessGetEzamowieniaPage(page, session, tenders, tendersOldAll)

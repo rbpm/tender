@@ -17,7 +17,8 @@ type Data interface {
 // id can be different in the same name and date
 func IsIn(tenders []Data, tender Data) bool {
 	for _, p := range tenders {
-		if p.Date() == tender.Date() && cleanSpace(p.Name()) == cleanSpace(tender.Name()) {
+		// p.Date() == tender.Date() &&
+		if cleanSpace(p.Name()) == cleanSpace(tender.Name()) {
 			// oneplace... server gives different hour:min
 			if p.Time() != tender.Time() {
 				println("TODO:", p.Time())

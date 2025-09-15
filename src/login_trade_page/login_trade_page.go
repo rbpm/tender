@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"tender/dto"
 	"tender/interfaces/data"
+	"time"
 
 	"github.com/Noooste/azuretls-client"
 	"github.com/gurkankaymak/gosoup"
@@ -24,6 +25,7 @@ func GetDefaultHrefID(value string) string {
 
 func ProcessGetLoginTradePages(client string, url string, getHrefID GetHrefID, urlPrefix string, urlSuffix string, pages int, err error, tenders []data.Data, done bool, tendersOldAll []data.Data) (error, []data.Data) {
 	session := azuretls.NewSession()
+	session.SetTimeout(5 * time.Minute)
 	for page := 1; page <= pages; page++ {
 		fmt.Println("loginTrade page: ", page)
 		err, tenders, done = ProcessGetLoginTradePage(client, url, getHrefID, urlPrefix, urlSuffix, page, pages, session, tenders, tendersOldAll)
